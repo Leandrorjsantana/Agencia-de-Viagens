@@ -1,0 +1,39 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.mo
+
+# ===== Django =====
+media/
+staticfiles/
+local_settings.py
+db.sqlite3
+
+# ===== Virtual Environment =====
+venv/
+backend/venv/
+
+# ===== Environment Variables =====
+.env
+*.env
+
+# ===== VS Code =====
+.vscode/
+*.code-workspace
+
+# ===== Node / Frontend =====
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+pnpm-lock.yaml
+
+# ===== OS Files =====
+.DS_Store
+Thumbs.db
