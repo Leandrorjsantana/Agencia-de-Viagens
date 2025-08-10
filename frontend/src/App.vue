@@ -75,6 +75,7 @@ export default {
     return {
       pageData: null,
       loading: true,
+      // CORREÇÃO: Garantindo que a URL do backend está limpa e correta
       backendUrl: "http://127.0.0.1:8000",
     };
   },
@@ -98,13 +99,19 @@ export default {
         this.loading = false;
       }
     },
-    updatePageMetadata(config) {
-      if (!config) return;
-
-      if (config.seo_title) {
-        document.title = config.seo_title;
+    injectScripts(scripts) {
+      if (scripts) {
+        const scriptElement = document.createElement('div');
+        scriptElement.innerHTML = scripts;
+        document.body.appendChild(scriptElement);
       }
-      
+    }
+  },
+  watch: {
+    pageData(newData) {
+      if (!newData) return;
+      const config = newData.site_configuration;
+      if (config.seo_title) document.title = config.seo_title;
       const descriptionTag = document.querySelector('meta[name="description"]');
       if (descriptionTag && config.seo_description) {
         descriptionTag.setAttribute('content', config.seo_description);
@@ -114,18 +121,13 @@ export default {
         newMeta.content = config.seo_description;
         document.head.appendChild(newMeta);
       }
-
       if (config.favicon) {
         const faviconTag = document.getElementById('favicon');
-        if (faviconTag) {
-          faviconTag.href = `${this.backendUrl}${config.favicon}`;
-        }
+        if (faviconTag) faviconTag.href = `${this.backendUrl}${config.favicon}`;
       }
-    }
-  },
-  watch: {
-    pageData(newData) {
-      this.updatePageMetadata(newData?.site_configuration);
+      this.injectScripts(config.tracking_header_scripts);
+      this.injectScripts(config.tracking_body_start_scripts);
+      this.injectScripts(config.tracking_body_end_scripts);
     }
   },
   created() {
@@ -135,6 +137,7 @@ export default {
 </script>
 
 <style>
+/* Estilos globais */
 body {
   font-family: var(--main-font, sans-serif);
   margin: 0;
@@ -160,6 +163,7 @@ body {
   padding: 50px;
   font-size: 1.2rem;
 }
+/* Cabeçalho */
 .main-header {
   background-color: var(--main-header-bg-color);
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -210,6 +214,11 @@ body {
   text-decoration: none;
   color: var(--main-header-text-color);
   font-weight: 500;
+  transition: color 0.2s ease-in-out;
+}
+.main-navigation a:hover,
+.main-navigation a.router-link-exact-active {
+  color: var(--primary-color);
 }
 .user-nav {
   flex-shrink: 0;
@@ -222,6 +231,7 @@ body {
   font-weight: bold;
   text-decoration: none;
 }
+/* Rodapé */
 .main-footer {
   background-color: var(--footer-bg-color);
   color: var(--footer-text-color);

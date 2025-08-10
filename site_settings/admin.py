@@ -15,6 +15,10 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
         ('Seção de Busca (Hero)', {
             'fields': ('hero_background_color', 'hero_background_image')
         }),
+        # NOVO: Seção para os Carrosséis
+        ('Configurações dos Carrosséis', {
+            'fields': ('banner_autoplay_speed', 'offer_carousel_speed')
+        }),
         ('Seção de Newsletter', {
             'fields': ('newsletter_headline', 'newsletter_subheadline', 'newsletter_button_text', 'newsletter_background_color', 'newsletter_background_image')
         }),
