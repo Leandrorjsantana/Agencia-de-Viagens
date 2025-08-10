@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'colorfield',
     'adminsortable2',
+    'banners.apps.BannersConfig',
 
     # Apps de Terceiros
     'rest_framework',

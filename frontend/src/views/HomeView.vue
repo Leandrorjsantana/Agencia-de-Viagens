@@ -2,9 +2,9 @@
   <div v-if="pageData">
     <section class="banner-carousel-section" v-if="pageData.banners && pageData.banners.length > 0">
       <Carousel :autoplay="getAutoplaySpeed(pageData.site_configuration.banner_autoplay_speed)" :wrap-around="true">
-        <Slide v-for="banner in pageData.banners" :key="banner.image">
+        <Slide v-for="banner in pageData.banners" :key="banner.id">
           <a :href="banner.link_url || '#'" target="_blank" rel="noopener noreferrer" class="carousel__item">
-            <img :src="`${backendUrl}${banner.image}`" alt="Banner">
+            <img :src="`${backendUrl}${banner.image}`" :alt="banner.title">
           </a>
         </Slide>
         <template #addons>
@@ -14,7 +14,7 @@
       </Carousel>
     </section>
 
-    <div class="services-bar" v-if="pageData.services && pageData.services.length > 0" :style="{ backgroundColor: pageData.site_configuration.services_tabs_background_color }">
+    <div class="services-bar" v-if="pageData.services && pageData.services.length > 0">
       <div class="container">
         <button v-for="service in pageData.services" :key="service.slug" @click="activeTab = service.slug" :class="{ active: activeTab === service.slug }">
           <i :class="service.icon_class"></i>
@@ -31,7 +31,6 @@
               <transition name="fade">
                 <div v-if="activeTab === service.slug" class="form-panel">
                   <div v-if="activeTab === 'hospedagens'" class="dynamic-form-grid">
-                    <!-- CORREÇÃO: Adicionando classes para controle de tamanho -->
                     <div class="form-group destination-group"><label>Cidade, hotel ou destino</label><input type="text" placeholder="Ex: Rio de Janeiro" v-model="formData.destination"></div>
                     <div class="form-group date-group"><label>Entrada</label><input type="date" v-model="formData.checkin"></div>
                     <div class="form-group date-group"><label>Saída</label><input type="date" v-model="formData.checkout"></div>
@@ -88,9 +87,10 @@
         <div class="newsletter-overlay"></div>
         <div class="container newsletter-content">
           <h2>{{ pageData.site_configuration.newsletter_headline }}</h2>
+          <p>{{ pageData.site_configuration.newsletter_subheadline }}</p>
           <form class="newsletter-form" @submit.prevent="handleNewsletterSubmit">
             <input type="email" placeholder="Digite seu melhor e-mail" v-model="newsletterEmail" required>
-            <button type="submit">{{ pageData.site_configuration.newsletter_button_text }}</button>
+            <button type="submit" class="newsletter-button">{{ pageData.site_configuration.newsletter_button_text }}</button>
           </form>
         </div>
     </section>
@@ -127,9 +127,9 @@ export default {
   },
   computed: {
     roomsDisplayText() { const totalAdults = this.rooms.reduce((acc, room) => acc + room.adults, 0); const totalChildren = this.rooms.reduce((acc, room) => acc + room.children, 0); const roomCount = this.rooms.length; let text = `${totalAdults} Adulto${totalAdults > 1 ? 's' : ''}`; if (totalChildren > 0) { text += `, ${totalChildren} Criança${totalChildren > 1 ? 's' : ''}`; } text += ` - ${roomCount} Quarto${roomCount > 1 ? 's' : ''}`; return text; },
-    heroStyle() { return this.pageData?.site_configuration?.hero_background_image ? { backgroundImage: `linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(${this.backendUrl}${this.pageData.site_configuration.hero_background_image})` } : { backgroundColor: '#333' }; },
+    heroStyle() { const config = this.pageData?.site_configuration; if (config?.hero_background_image) { return { backgroundImage: `linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(${this.backendUrl}${config.hero_background_image})` }; } return { backgroundColor: config?.hero_background_color || '#333' }; },
     servicesWithOffers() { return this.pageData?.services?.filter(s => s.offers && s.offers.length > 0) || []; },
-    newsletterStyle() { return this.pageData?.site_configuration?.newsletter_background_image ? { backgroundImage: `url(${this.backendUrl}${this.pageData.site_configuration.newsletter_background_image})` } : {}; }
+    newsletterStyle() { const config = this.pageData?.site_configuration; if (config?.newsletter_background_image) { return { backgroundImage: `url(${this.backendUrl}${config.newsletter_background_image})` }; } return { backgroundColor: config?.newsletter_background_color || '#212529' }; }
   },
   methods: {
     addRoom() { this.rooms.push({ adults: 1, children: 0 }); },
@@ -168,80 +168,37 @@ export default {
 /* Importa o CSS do Carrossel */
 @import 'vue3-carousel/dist/carousel.css';
 
-/* Estilos para o carrossel de banners */
-.banner-carousel-section .carousel__item { height: 60vh; min-height: 450px; width: 100%; color: white; }
-.banner-carousel-section .carousel__item img { width: 100%; height: 100%; object-fit: cover; }
-.carousel__pagination-button--active::after { background-color: var(--primary-color) !important; }
+/* --- CORREÇÃO DO BANNER --- */
+.banner-carousel-section .carousel__item {
+  height: auto; /* A altura se ajusta ao conteúdo */
+  width: 100%;
+  color: white;
+}
+.banner-carousel-section .carousel__item img {
+  width: 100%;
+  height: auto; /* A altura se ajusta para manter a proporção */
+  display: block; /* Remove espaço extra abaixo da imagem */
+  max-height: 70vh; /* Limita a altura máxima em telas grandes */
+  object-fit: cover; /* Garante que a imagem cubra a área se necessário */
+}
+/* ------------------------- */
 
-/* Barra de Serviços */
+.carousel__pagination-button--active::after { background-color: var(--primary-color) !important; }
 .services-bar { padding: 15px 0; border-bottom: 1px solid #eee; background-color: #fff; }
 .services-bar .container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
 .services-bar button { background: none; border: none; cursor: pointer; padding: 10px 15px; font-size: 1rem; display: flex; align-items: center; gap: 8px; transition: color 0.3s, border-color 0.3s; border-bottom: 3px solid transparent; }
 .services-bar button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
-
-/* Seção do Formulário de Busca */
 .hero-section { background-size: cover; background-position: center; padding: 60px 0; }
 .booking-form-container { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-.dynamic-form-grid {
-  display: flex;
-  flex-wrap: wrap; /* Permite quebrar a linha em telas menores */
-  gap: 15px; /* Espaçamento consistente entre os campos */
-  align-items: flex-end;
-}
-.form-group {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1; /* Permite que os campos cresçam */
-  flex-basis: 140px; /* Define uma largura base para os campos menores */
-}
-.form-group.destination-group {
-  flex-grow: 2;
-  flex-basis: 250px; /* Garante que o campo de destino seja maior */
-}
-.form-group.guests-group {
-  flex-grow: 1.5;
-  flex-basis: 220px; /* Garante que o campo de hóspedes seja maior */
-}
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-.form-group input, .form-group .custom-input-btn {
-  height: 48px;
-  width: 100%;
-  padding: 0 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  box-sizing: border-box; /* Garante que o padding não afete a largura total */
-}
-.custom-input-btn {
-  text-align: left;
-  background-color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-.form-group.button-group {
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: auto;
-}
-.search-button {
-  background-color: var(--primary-color);
-  color: #fff;
-  border: none;
-  height: 48px;
-  width: 50px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+.dynamic-form-grid { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }
+.form-group { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 140px; }
+.form-group.destination-group { flex-grow: 2; min-width: 250px; }
+.form-group.guests-group { min-width: 220px; }
+.form-group label { margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; }
+.form-group input, .form-group .custom-input-btn { height: 48px; width: 100%; padding: 0 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+.custom-input-btn { text-align: left; background-color: #fff; cursor: pointer; display: flex; align-items: center; }
+.form-group.button-group { flex-grow: 0; flex-shrink: 0; min-width: auto; }
+.search-button { background-color: var(--primary-color); color: #fff; border: none; height: 48px; width: 50px; border-radius: 8px; cursor: pointer; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; }
 .room-selector-popup { position: absolute; top: 105%; left: 0; background: #fff; border: 1px solid #ccc; border-radius: 8px; padding: 15px; z-index: 100; min-width: 300px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 .room-item { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
 .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -252,8 +209,6 @@ export default {
 .add-room-btn, .apply-btn, .remove-room-btn { border: none; background: none; cursor: pointer; font-weight: bold; }
 .add-room-btn { color: var(--primary-color); }
 .apply-btn { background-color: var(--primary-color); color: #fff; padding: 8px 15px; border-radius: 5px; }
-
-/* Seção de Ofertas */
 .offer-section { padding: 60px 0; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .section-header h2 { font-size: 2.2rem; font-weight: 700; }
@@ -264,16 +219,13 @@ export default {
 .card-content-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0; }
 .price-value { font-size: 1.5rem; font-weight: bold; color: var(--primary-color); }
 .details-button { background-color: var(--primary-color); color: #fff; padding: 8px 16px; border-radius: 5px; font-weight: 500; }
-
-/* Seção de Newsletter */
 .newsletter-section { padding: 80px 0; background-size: cover; background-position: center; position: relative; color: #fff; text-align: center; }
 .newsletter-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.6); }
 .newsletter-content { position: relative; z-index: 2; }
 .newsletter-form { margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
 .newsletter-form input { padding: 15px; width: 300px; border: none; border-radius: 5px; }
-.newsletter-form button { padding: 15px 30px; border: none; border-radius: 5px; background-color: var(--primary-color); color: #fff; font-weight: bold; cursor: pointer; }
-
-/* Efeitos de Transição */
+.newsletter-button { padding: 15px 35px; border: none; border-radius: 50px; background-color: var(--primary-color); color: #fff; font-weight: bold; font-size: 1rem; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.newsletter-button:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

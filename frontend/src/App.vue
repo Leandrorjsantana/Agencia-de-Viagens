@@ -98,23 +98,12 @@ export default {
         this.loading = false;
       }
     },
-    // CORREÇÃO: Removendo o parâmetro 'placeholder' que não estava sendo usado
-    injectScripts(scripts) {
-      if (scripts) {
-        const scriptElement = document.createElement('div');
-        scriptElement.innerHTML = scripts;
-        
-        // Injeta os scripts no final do body
-        document.body.appendChild(scriptElement);
-      }
-    }
-  },
-  watch: {
-    pageData(newData) {
-      if (!newData) return;
-      const config = newData.site_configuration;
+    updatePageMetadata(config) {
+      if (!config) return;
 
-      if (config.seo_title) document.title = config.seo_title;
+      if (config.seo_title) {
+        document.title = config.seo_title;
+      }
       
       const descriptionTag = document.querySelector('meta[name="description"]');
       if (descriptionTag && config.seo_description) {
@@ -128,13 +117,15 @@ export default {
 
       if (config.favicon) {
         const faviconTag = document.getElementById('favicon');
-        if (faviconTag) faviconTag.href = `${this.backendUrl}${config.favicon}`;
+        if (faviconTag) {
+          faviconTag.href = `${this.backendUrl}${config.favicon}`;
+        }
       }
-
-      // Simplificando a injeção de scripts
-      this.injectScripts(config.tracking_header_scripts);
-      this.injectScripts(config.tracking_body_start_scripts);
-      this.injectScripts(config.tracking_body_end_scripts);
+    }
+  },
+  watch: {
+    pageData(newData) {
+      this.updatePageMetadata(newData?.site_configuration);
     }
   },
   created() {
@@ -144,7 +135,6 @@ export default {
 </script>
 
 <style>
-/* Estilos globais */
 body {
   font-family: var(--main-font, sans-serif);
   margin: 0;
@@ -170,7 +160,6 @@ body {
   padding: 50px;
   font-size: 1.2rem;
 }
-/* Cabeçalho */
 .main-header {
   background-color: var(--main-header-bg-color);
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -233,7 +222,6 @@ body {
   font-weight: bold;
   text-decoration: none;
 }
-/* Rodapé */
 .main-footer {
   background-color: var(--footer-bg-color);
   color: var(--footer-text-color);

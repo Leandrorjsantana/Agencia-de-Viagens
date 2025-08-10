@@ -21,7 +21,26 @@ class SiteConfiguration(models.Model):
         verbose_name="Altura do Logo (em pixels)"
     )
 
-    # Seção de Fontes e Cores
+    # Seção do Formulário de Busca (Hero)
+    hero_background_color = ColorField(default='#333333', verbose_name="Cor de Fundo da Busca")
+    hero_background_image = models.ImageField(
+        upload_to='backgrounds/', blank=True, null=True, 
+        help_text="Opcional. Dimensão recomendada: 1920x500 pixels.", 
+        verbose_name="Imagem de Fundo da Busca"
+    )
+    
+    # Seção da Newsletter
+    newsletter_headline = models.CharField(max_length=100, blank=True, verbose_name="Título da Newsletter")
+    newsletter_subheadline = models.CharField(max_length=255, blank=True, verbose_name="Subtítulo da Newsletter")
+    newsletter_button_text = models.CharField(max_length=50, default='Inscrever-se', verbose_name="Texto do Botão da Newsletter")
+    newsletter_background_color = ColorField(default='#212529', verbose_name="Cor de Fundo da Newsletter")
+    newsletter_background_image = models.ImageField(
+        upload_to='backgrounds/', blank=True, null=True, 
+        help_text="Opcional. Dimensão recomendada: 1920x400 pixels.", 
+        verbose_name="Imagem de Fundo da Newsletter"
+    )
+
+    # Seção de Fontes e Cores Globais
     main_font = models.CharField(max_length=100, default='Poppins', verbose_name="Fonte Principal")
     primary_color = ColorField(default='#0d6efd', verbose_name="Cor Primária (Botões e Links)")
     top_bar_bg_color = ColorField(default='#F8F9FA', verbose_name="Fundo da Barra Superior")

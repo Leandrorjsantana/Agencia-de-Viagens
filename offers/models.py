@@ -5,18 +5,30 @@ from services.models import Service
 
 class Offer(models.Model):
     # Relacionamentos
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='offers', verbose_name="Serviço")
+    service = models.ForeignKey(
+        Service, 
+        on_delete=models.CASCADE, 
+        related_name='offers', 
+        verbose_name="Serviço"
+    )
 
     # Informações Principais
     title = models.CharField(max_length=255, verbose_name="Título Principal")
     subtitle = models.CharField(max_length=255, verbose_name="Subtítulo")
     slug = models.SlugField(unique=True)
-    image = models.ImageField(upload_to='offers/', blank=True, null=True, verbose_name="Imagem do Card")
+    image = models.ImageField(
+        upload_to='offers/', blank=True, null=True, 
+        verbose_name="Imagem do Card",
+        help_text="Dimensão recomendada: 400x300 pixels"
+    )
     details = models.TextField(blank=True, verbose_name="Detalhes (um por linha)")
 
     # Preços
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Preço Final")
-    original_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name="Preço Original (para mostrar desconto)")
+    original_price = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True, 
+        verbose_name="Preço Original (para mostrar desconto)"
+    )
     price_per_person = models.BooleanField(default=True, verbose_name="É preço por pessoa?")
     taxes_included = models.BooleanField(default=True, verbose_name="Taxas inclusas?")
 

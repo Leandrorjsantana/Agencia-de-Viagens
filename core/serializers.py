@@ -1,11 +1,20 @@
+# core/serializers.py
+
 from rest_framework import serializers
 from site_settings.models import SiteConfiguration
 from menus.models import TopBarLink, MenuItem, SocialMediaLink
 from services.models import Service
 from offers.models import Offer
+from banners.models import Banner # Importa o modelo de Banner
 
-# Cada classe abaixo é um "molde" para um tipo de dado específico.
+# Molde para os Banners
+class BannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banner
+        fields = ('id', 'title', 'subtitle', 'image', 'link_url')
 
+# (O resto dos seus serializers... SiteConfigurationSerializer, OfferSerializer, etc.)
+# ...
 class SiteConfigurationSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteConfiguration
@@ -37,7 +46,6 @@ class OfferSerializer(serializers.ModelSerializer):
         )
 
 class ServiceSerializer(serializers.ModelSerializer):
-    # CORREÇÃO: Usando um SerializerMethodField para filtrar as ofertas corretamente.
     offers = serializers.SerializerMethodField()
     
     class Meta:
@@ -48,20 +56,18 @@ class ServiceSerializer(serializers.ModelSerializer):
         )
 
     def get_offers(self, service_instance):
-        # Este método filtra as ofertas para cada serviço individualmente.
         offers_queryset = Offer.objects.filter(
             service=service_instance, 
             is_active=True, 
             show_on_landing_page=True
         )
-        # Serializa apenas as ofertas filtradas.
         return OfferSerializer(offers_queryset, many=True).data
 
-# Este é o "molde" principal que junta todos os outros em um único pacote.
+# Molde principal que junta tudo
 class SiteDataSerializer(serializers.Serializer):
     site_configuration = SiteConfigurationSerializer()
     top_bar_links = TopBarLinkSerializer(many=True)
     main_menu_items = MenuItemSerializer(many=True)
     social_media_links = SocialMediaLinkSerializer(many=True)
     services = ServiceSerializer(many=True)
-    # Banners e outras seções serão adicionados aqui no futuro.
+    banners = BannerSerializer(many=True) # Adiciona os banners ao pacote
