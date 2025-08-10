@@ -1,38 +1,45 @@
-# core/views.py
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
 from site_settings.models import SiteConfiguration
-from site_settings.serializers import SiteConfigurationSerializer
-from menus.models import TopBarLink, MenuItem
-from menus.serializers import TopBarLinkSerializer, MenuItemSerializer
+from menus.models import TopBarLink, MenuItem, SocialMediaLink
+from services.models import Service
+
+# Importando o Serializer principal do nosso app 'core'
+from .serializers import SiteDataSerializer
 
 class SiteDataAPIView(APIView):
     """
     Esta API entrega todos os dados essenciais para a construção do
-    layout principal do site (cabeçalho, rodapé, etc.).
+    layout principal do site.
     """
     def get(self, request, *args, **kwargs):
-        # Tenta buscar a primeira (e única) configuração do site.
-        # Se não existir, cria uma com valores padrão.
-        site_config, created = SiteConfiguration.objects.get_or_create(pk=1)
+        # Busca a primeira (e única) configuração do site.
+        site_config = SiteConfiguration.objects.first()
         
-        # Busca todos os links dos menus, ordenados.
-        top_bar_links = TopBarLink.objects.all().order_by('order')
-        main_menu_items = MenuItem.objects.all().order_by('order')
+        # Se não houver configuração, cria uma para evitar erros.
+        if not site_config:
+            site_config = SiteConfiguration.objects.create()
 
-        # Serializa os dados para o formato JSON.
-        config_serializer = SiteConfigurationSerializer(site_config)
-        top_bar_serializer = TopBarLinkSerializer(top_bar_links, many=True)
-        main_menu_serializer = MenuItemSerializer(main_menu_items, many=True)
+        # Busca os outros dados, ordenados.
+        top_bar_links = TopBarLink.objects.all()
+        main_menu_items = MenuItem.objects.all()
+        social_media_links = SocialMediaLink.objects.all()
+        
+        # CORREÇÃO: Apenas buscamos os serviços ativos. O serializer fará o resto.
+        services = Service.objects.filter(is_active=True)
 
-        # Monta o pacote de dados final.
+        # Monta um dicionário com todos os dados para o serializer.
         data = {
-            'site_configuration': config_serializer.data,
-            'top_bar_links': top_bar_serializer.data,
-            'main_menu_items': main_menu_serializer.data,
+            'site_configuration': site_config,
+            'top_bar_links': top_bar_links,
+            'main_menu_items': main_menu_items,
+            'social_media_links': social_media_links,
+            'services': services,
         }
         
-        return Response(data, status=status.HTTP_200_OK)
+        # Usa o SiteDataSerializer para formatar os dados para a API.
+        serializer = SiteDataSerializer(data)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
