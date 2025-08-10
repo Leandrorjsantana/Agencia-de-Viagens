@@ -1,27 +1,26 @@
 <template>
   <div id="app">
-    <!-- Cor primária dinâmica -->
-    <component :is="'style'" v-if="pageData?.site_configuration?.primary_color">
+    <component :is="'style'" v-if="pageData?.site_configuration">
       :root {
         --primary-color: {{ pageData.site_configuration.primary_color }};
+        --main-font: '{{ pageData.site_configuration.main_font }}', sans-serif;
+        
+        --top-bar-bg-color: {{ pageData.site_configuration.top_bar_bg_color }};
+        --top-bar-text-color: {{ pageData.site_configuration.top_bar_text_color }};
+
+        --main-header-bg-color: {{ pageData.site_configuration.main_header_bg_color }};
+        --main-header-text-color: {{ pageData.site_configuration.main_header_text_color }};
+
+        --footer-bg-color: {{ pageData.site_configuration.footer_bg_color }};
+        --footer-text-color: {{ pageData.site_configuration.footer_text_color }};
       }
     </component>
 
-    <!-- Cabeçalho -->
     <header class="main-header" v-if="pageData">
       <div class="header-top">
         <div class="container">
           <div class="top-info">
-            <!-- Links do topo -->
-            <component
-              v-for="link in pageData.top_bar_links"
-              :key="link.id"
-              :is="link.url ? 'a' : 'div'"
-              :href="link.url || null"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="info-item"
-            >
+            <component v-for="link in pageData.top_bar_links" :key="link.id" :is="link.url ? 'a' : 'div'" :href="link.url || null" target="_blank" rel="noopener noreferrer" class="info-item">
               <i :class="link.icon_class"></i>
               <span>{{ link.title }}</span>
             </component>
@@ -31,12 +30,7 @@
       <div class="header-main">
         <div class="container">
           <router-link to="/" class="logo">
-            <img
-              v-if="pageData.site_configuration.logo"
-              :src="logoUrl"
-              alt="Logo da Agência"
-              :style="{ height: pageData.site_configuration.logo_height + 'px' }"
-            >
+            <img v-if="pageData.site_configuration.logo" :src="logoUrl" alt="Logo da Agência" :style="{ height: pageData.site_configuration.logo_height + 'px' }">
           </router-link>
           <nav class="main-navigation">
             <ul>
@@ -52,21 +46,20 @@
       </div>
     </header>
 
-    <!-- Conteúdo principal -->
     <main class="body-wrapper">
-      <router-view
-        v-if="!loading"
-        :pageData="pageData"
-        :backendUrl="backendUrl"
-      />
+      <router-view v-if="!loading" :pageData="pageData" :backendUrl="backendUrl" />
       <div v-else class="loading-container">
         <p>Carregando Agência...</p>
       </div>
     </main>
 
-    <!-- Rodapé -->
     <footer class="main-footer" v-if="pageData?.site_configuration">
       <div class="container">
+        <div class="social-icons" v-if="pageData.social_media_links && pageData.social_media_links.length">
+          <a v-for="social in pageData.social_media_links" :key="social.id" :href="social.url" target="_blank" rel="noopener noreferrer">
+            <i :class="social.icon_class"></i>
+          </a>
+        </div>
         <p>{{ pageData.site_configuration.footer_text }}</p>
       </div>
     </footer>
@@ -74,15 +67,15 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
-  name: "App",
+  name: 'App',
   data() {
     return {
       pageData: null,
       loading: true,
-      backendUrl: "http://127.0.0.1:8000", // CORRIGIDO - URL limpa
+      backendUrl: "http://127.0.0.1:8000",
     };
   },
   computed: {
@@ -90,8 +83,8 @@ export default {
       if (this.pageData?.site_configuration?.logo) {
         return `${this.backendUrl}${this.pageData.site_configuration.logo}`;
       }
-      return "";
-    },
+      return '';
+    }
   },
   methods: {
     async fetchSiteData() {
@@ -105,54 +98,86 @@ export default {
         this.loading = false;
       }
     },
+    // CORREÇÃO: Removendo o parâmetro 'placeholder' que não estava sendo usado
+    injectScripts(scripts) {
+      if (scripts) {
+        const scriptElement = document.createElement('div');
+        scriptElement.innerHTML = scripts;
+        
+        // Injeta os scripts no final do body
+        document.body.appendChild(scriptElement);
+      }
+    }
+  },
+  watch: {
+    pageData(newData) {
+      if (!newData) return;
+      const config = newData.site_configuration;
+
+      if (config.seo_title) document.title = config.seo_title;
+      
+      const descriptionTag = document.querySelector('meta[name="description"]');
+      if (descriptionTag && config.seo_description) {
+        descriptionTag.setAttribute('content', config.seo_description);
+      } else if (config.seo_description) {
+        const newMeta = document.createElement('meta');
+        newMeta.name = "description";
+        newMeta.content = config.seo_description;
+        document.head.appendChild(newMeta);
+      }
+
+      if (config.favicon) {
+        const faviconTag = document.getElementById('favicon');
+        if (faviconTag) faviconTag.href = `${this.backendUrl}${config.favicon}`;
+      }
+
+      // Simplificando a injeção de scripts
+      this.injectScripts(config.tracking_header_scripts);
+      this.injectScripts(config.tracking_body_start_scripts);
+      this.injectScripts(config.tracking_body_end_scripts);
+    }
   },
   created() {
     this.fetchSiteData();
-  },
+  }
 };
 </script>
 
 <style>
-:root {
-  --primary-color: #0d6efd;
-}
-
+/* Estilos globais */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--main-font, sans-serif);
   margin: 0;
   background-color: #f4f5f7;
   color: #333;
   line-height: 1.6;
 }
-
 #app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
-
 .body-wrapper {
   flex-grow: 1;
 }
-
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
-
 .loading-container {
   text-align: center;
   padding: 50px;
   font-size: 1.2rem;
 }
-
 /* Cabeçalho */
 .main-header {
-  background-color: #fff;
+  background-color: var(--main-header-bg-color);
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 .header-top {
+  background-color: var(--top-bar-bg-color);
+  color: var(--top-bar-text-color);
   border-bottom: 1px solid #e9ecef;
   padding: 8px 0;
   font-size: 0.85rem;
@@ -194,7 +219,7 @@ body {
 }
 .main-navigation a {
   text-decoration: none;
-  color: #333;
+  color: var(--main-header-text-color);
   font-weight: 500;
 }
 .user-nav {
@@ -208,12 +233,23 @@ body {
   font-weight: bold;
   text-decoration: none;
 }
-
 /* Rodapé */
 .main-footer {
-  background-color: #212529;
-  color: #fff;
+  background-color: var(--footer-bg-color);
+  color: var(--footer-text-color);
   padding: 40px 0;
   text-align: center;
+}
+.social-icons {
+  margin-bottom: 20px;
+}
+.social-icons a {
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 0 10px;
+  transition: color 0.3s;
+}
+.social-icons a:hover {
+  color: var(--primary-color);
 }
 </style>

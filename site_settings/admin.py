@@ -3,5 +3,36 @@
 from django.contrib import admin
 from .models import SiteConfiguration
 
-# Este comando registra o modelo SiteConfiguration no painel de administração.
-admin.site.register(SiteConfiguration)
+@admin.register(SiteConfiguration)
+class SiteConfigurationAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('Identidade Visual', {
+            'fields': ('site_name', 'logo', 'logo_height', 'favicon')
+        }),
+        ('Fontes e Cores', {
+            'fields': (
+                'main_font', 
+                'primary_color',
+                ('top_bar_bg_color', 'top_bar_text_color'),
+                ('main_header_bg_color', 'main_header_text_color'),
+                ('footer_bg_color', 'footer_text_color'),
+            )
+        }),
+        ('SEO e Metatags', {
+            'classes': ('collapse',), # Começa fechado para não poluir a tela
+            'fields': ('seo_title', 'seo_description')
+        }),
+        ('Scripts de Rastreamento (Marketing)', {
+            'classes': ('collapse',),
+            'fields': ('tracking_header_scripts', 'tracking_body_start_scripts', 'tracking_body_end_scripts')
+        }),
+        ('Rodapé', {
+            'fields': ('footer_text',)
+        }),
+    )
+
+    def has_add_permission(self, request):
+        return not SiteConfiguration.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False

@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'colorfield',
+    'adminsortable2',
 
     # Apps de Terceiros
     'rest_framework',
