@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'leads.apps.LeadsConfig',
     'banners.apps.BannersConfig',
+    'reservations.apps.ReservationsConfig',
 ]
 
 MIDDLEWARE = [
@@ -97,6 +98,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# --- CORREÇÃO ADICIONADA AQUI ---
+# Define a autenticação JWT como o padrão para TODO o nosso projeto.
+# Agora, qualquer API que exija login saberá como ler o token.
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -114,7 +118,6 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 
-# --- CORREÇÃO AQUI: Forçando o uso de JWT e da nossa lógica de login ---
 REST_AUTH = {
     'USE_JWT': True,
     'LOGIN_SERIALIZER': 'accounts.serializers.CustomLoginSerializer',

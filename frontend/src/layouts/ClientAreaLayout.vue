@@ -3,7 +3,6 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <router-link to="/" class="sidebar-logo">
-          <!-- Usamos um v-if para garantir que os dados existem antes de tentar usá-los -->
           <img v-if="logoUrl" :src="logoUrl" alt="Logo da Agência" :style="{ height: pageData.site_configuration.logo_height + 'px' }">
         </router-link>
         <h3>Minha Conta</h3>

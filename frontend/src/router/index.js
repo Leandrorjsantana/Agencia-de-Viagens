@@ -6,6 +6,9 @@ import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
 import ClientAreaLayout from '../layouts/ClientAreaLayout.vue'
 
+// Componente genérico para páginas em construção
+const PlaceholderPage = { template: '<div class="container" style="padding: 50px 20px;"><h2>Página em Construção</h2><p>O conteúdo para esta seção estará disponível em breve.</p></div>' };
+
 // Função de "guarda" que protege as rotas
 const requireAuth = (to, from, next) => {
   if (!localStorage.getItem('accessToken')) {
@@ -20,7 +23,16 @@ const routes = [
   { path: '/', name: 'home', component: HomeView },
   { path: '/register', name: 'register', component: RegisterView },
   { path: '/login', name: 'login', component: LoginView },
-  // Adicione outras rotas públicas/placeholder aqui se necessário
+  { path: '/experiencias', name: 'experiencias', component: PlaceholderPage },
+  { path: '/destinos', name: 'destinos', component: PlaceholderPage },
+  { path: '/servicos', name: 'servicos', component: PlaceholderPage },
+  { path: '/blog', name: 'blog', component: PlaceholderPage },
+  { path: '/sobre-nos', name: 'sobre-nos', component: PlaceholderPage },
+  { path: '/contato', name: 'contato', component: PlaceholderPage },
+  { path: '/ajuda', name: 'ajuda', component: PlaceholderPage },
+  { path: '/televendas', name: 'televendas', component: PlaceholderPage },
+  { path: '/ofertas/:slug', name: 'offer-detail', component: PlaceholderPage },
+  { path: '/ofertas/servico/:slug', name: 'service-offers', component: PlaceholderPage },
 
   // Rotas da Área do Cliente
   {

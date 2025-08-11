@@ -5,9 +5,10 @@
       <p>Carregando...</p>
     </div>
 
-    <div v-if="!loading && userProfile">
+    <!-- CORREÇÃO: Adicionamos uma verificação extra (v-if) para garantir que userProfile e userProfile.profile existam -->
+    <div v-if="!loading && userProfile && userProfile.profile">
       <div class="page-header">
-        <!-- Mensagem de boas-vindas personalizada -->
+        <!-- A saudação agora é segura -->
         <h1>Olá, {{ userProfile.profile.full_name || userProfile.username }}!</h1>
         <p>Bem-vindo ao seu painel. Aqui você pode gerenciar suas viagens e informações.</p>
       </div>
@@ -34,7 +35,6 @@
           </div>
         </router-link>
 
-        <!-- Widget de Exemplo para o Futuro -->
         <div class="widget-card disabled">
           <div class="widget-icon">
             <i class="fa-solid fa-tags"></i>
@@ -70,7 +70,6 @@ export default {
     };
   },
   async created() {
-    // Busca os dados do perfil assim que a página é criada
     await this.fetchUserProfile();
   },
   methods: {
@@ -83,7 +82,6 @@ export default {
       this.loading = true;
       this.errorMessage = null;
       try {
-        // Usando a mesma API segura que a página de Perfil usa
         const response = await axios.get(`${this.backendUrl}/api/v1/accounts/profile/`, {
           headers: this.getAuthHeaders()
         });

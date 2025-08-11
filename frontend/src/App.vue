@@ -1,7 +1,22 @@
 <template>
-  <div id="app">
-    <!-- O bloco de estilo dinâmico foi removido daqui e agora é controlado pelo script -->
+  <div id="app-container">
+    <component :is="'style'" v-if="pageData?.site_configuration">
+      :root {
+        --primary-color: {{ pageData.site_configuration.primary_color }};
+        --main-font: '{{ pageData.site_configuration.main_font }}', sans-serif;
+        
+        --top-bar-bg-color: {{ pageData.site_configuration.top_bar_bg_color }};
+        --top-bar-text-color: {{ pageData.site_configuration.top_bar_text_color }};
 
+        --main-header-bg-color: {{ pageData.site_configuration.main_header_bg_color }};
+        --main-header-text-color: {{ pageData.site_configuration.main_header_text_color }};
+
+        --footer-bg-color: {{ pageData.site_configuration.footer_bg_color }};
+        --footer-text-color: {{ pageData.site_configuration.footer_text_color }};
+      }
+    </component>
+
+    <!-- O cabeçalho SÓ aparece se a rota NÃO for da área do cliente -->
     <header class="main-header" v-if="!isClientArea && pageData">
       <div class="header-top">
         <div class="container">
@@ -44,6 +59,7 @@
       </div>
     </main>
 
+    <!-- O rodapé SÓ aparece se a rota NÃO for da área do cliente -->
     <footer class="main-footer" v-if="!isClientArea && pageData?.site_configuration">
       <div class="container">
         <div class="social-icons" v-if="pageData.social_media_links && pageData.social_media_links.length">
@@ -59,7 +75,6 @@
 
 <script>
 import axios from 'axios';
-
 export default {
   name: 'App',
   data() {
@@ -71,9 +86,7 @@ export default {
     };
   },
   computed: {
-    logoUrl() {
-      return this.pageData?.site_configuration?.logo ? `${this.backendUrl}${this.pageData.site_configuration.logo}` : '';
-    },
+    logoUrl() { return this.pageData?.site_configuration?.logo ? `${this.backendUrl}${this.pageData.site_configuration.logo}` : ''; },
     isClientArea() {
       return this.$route.matched.some(record => record.meta.isClientArea);
     }
@@ -84,28 +97,10 @@ export default {
       try {
         const response = await axios.get(`${this.backendUrl}/api/v1/site-data/`);
         this.pageData = response.data;
-      } catch (error) {
-        console.error("Erro ao buscar dados do site:", error);
-      } finally {
-        this.loading = false;
-      }
+      } catch (error) { console.error("Erro ao buscar dados do site:", error); }
+      finally { this.loading = false; }
     },
-    checkLoginStatus() {
-      this.isLoggedIn = !!localStorage.getItem('accessToken');
-    },
-    // NOVO: Método para aplicar os estilos globais
-    applyGlobalStyles(config) {
-      if (!config) return;
-      const root = document.documentElement;
-      root.style.setProperty('--primary-color', config.primary_color);
-      root.style.setProperty('--main-font', `'${config.main_font}', sans-serif`);
-      root.style.setProperty('--top-bar-bg-color', config.top_bar_bg_color);
-      root.style.setProperty('--top-bar-text-color', config.top_bar_text_color);
-      root.style.setProperty('--main-header-bg-color', config.main_header_bg_color);
-      root.style.setProperty('--main-header-text-color', config.main_header_text_color);
-      root.style.setProperty('--footer-bg-color', config.footer_bg_color);
-      root.style.setProperty('--footer-text-color', config.footer_text_color);
-    },
+    checkLoginStatus() { this.isLoggedIn = !!localStorage.getItem('accessToken'); },
     updatePageMetadata(config) {
       if (!config) return;
       if (config.seo_title) document.title = config.seo_title;
@@ -116,15 +111,8 @@ export default {
     }
   },
   watch: {
-    // ATUALIZADO: O observador agora chama os métodos para aplicar estilos e metadados
-    pageData(newData) {
-      const config = newData?.site_configuration;
-      this.applyGlobalStyles(config);
-      this.updatePageMetadata(config);
-    },
-    '$route'() {
-      this.checkLoginStatus();
-    }
+    pageData(newData) { this.updatePageMetadata(newData?.site_configuration); },
+    '$route'() { this.checkLoginStatus(); }
   },
   created() {
     this.fetchSiteData();
@@ -134,125 +122,27 @@ export default {
 </script>
 
 <style>
-/* Estilos globais que agora USAM as variáveis CSS */
-body {
-  font-family: var(--main-font, sans-serif);
-  margin: 0;
-  background-color: #f4f5f7;
-  color: #333;
-  line-height: 1.6;
-}
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-.body-wrapper {
-  flex-grow: 1;
-}
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-.loading-container {
-  text-align: center;
-  padding: 50px;
-  font-size: 1.2rem;
-}
-/* Cabeçalho */
-.main-header {
-  background-color: var(--main-header-bg-color);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.header-top {
-  background-color: var(--top-bar-bg-color);
-  color: var(--top-bar-text-color);
-  border-bottom: 1px solid #e9ecef;
-  padding: 8px 0;
-  font-size: 0.85rem;
-}
-.top-info {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 25px;
-}
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: inherit;
-  text-decoration: none;
-}
-.header-main .container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 15px 0;
-}
-.logo img {
-  width: auto;
-  display: block;
-}
-.main-navigation {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-}
-.main-navigation ul {
-  display: flex;
-  gap: 30px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.main-navigation a {
-  text-decoration: none;
-  color: var(--main-header-text-color);
-  font-weight: 500;
-  transition: color 0.2s ease-in-out;
-}
-.main-navigation a:hover,
-.main-navigation a.router-link-exact-active {
-  color: var(--primary-color);
-}
-.user-nav {
-  flex-shrink: 0;
-}
-.login-button {
-  background-color: var(--primary-color);
-  color: #fff !important;
-  padding: 10px 15px;
-  border-radius: 5px;
-  font-weight: bold;
-  text-decoration: none;
-}
-.client-area-button {
-  background-color: #198754;
-  color: #fff !important;
-  padding: 10px 15px;
-  border-radius: 5px;
-  font-weight: bold;
-  text-decoration: none;
-}
-/* Rodapé */
-.main-footer {
-  background-color: var(--footer-bg-color);
-  color: var(--footer-text-color);
-  padding: 40px 0;
-  text-align: center;
-}
-.social-icons {
-  margin-bottom: 20px;
-}
-.social-icons a {
-  color: #fff;
-  font-size: 1.5rem;
-  margin: 0 10px;
-  transition: color 0.3s;
-}
-.social-icons a:hover {
-  color: var(--primary-color);
-}
+body { font-family: var(--main-font, sans-serif); margin: 0; background-color: #f4f5f7; }
+#app-container { min-height: 100vh; display: flex; flex-direction: column; }
+.body-wrapper { flex-grow: 1; display: flex; flex-direction: column; }
+.body-wrapper > * { flex-grow: 1; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.loading-container { display: flex; justify-content: center; align-items: center; flex-grow: 1; }
+.main-header { background-color: var(--main-header-bg-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.header-top { background-color: var(--top-bar-bg-color); color: var(--top-bar-text-color); border-bottom: 1px solid #e9ecef; padding: 8px 0; font-size: 0.85rem; }
+.top-info { display: flex; justify-content: flex-end; align-items: center; gap: 25px; }
+.info-item { display: flex; align-items: center; gap: 8px; color: inherit; text-decoration: none; }
+.header-main .container { display: flex; align-items: center; gap: 20px; padding: 15px 0; }
+.logo img { width: auto; display: block; }
+.main-navigation { flex-grow: 1; display: flex; justify-content: center; }
+.main-navigation ul { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; }
+.main-navigation a { text-decoration: none; color: var(--main-header-text-color); font-weight: 500; transition: color 0.2s ease-in-out; }
+.main-navigation a:hover, .main-navigation a.router-link-exact-active { color: var(--primary-color); }
+.user-nav { flex-shrink: 0; }
+.login-button { background-color: var(--primary-color); color: #fff !important; padding: 10px 15px; border-radius: 5px; font-weight: bold; text-decoration: none; }
+.client-area-button { background-color: #198754; color: #fff !important; padding: 10px 15px; border-radius: 5px; font-weight: bold; text-decoration: none; }
+.main-footer { background-color: var(--footer-bg-color); color: var(--footer-text-color); padding: 40px 0; text-align: center; }
+.social-icons { margin-bottom: 20px; }
+.social-icons a { color: #fff; font-size: 1.5rem; margin: 0 10px; transition: color 0.3s; }
+.social-icons a:hover { color: var(--primary-color); }
 </style>
