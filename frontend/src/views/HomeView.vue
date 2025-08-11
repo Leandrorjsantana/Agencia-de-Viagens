@@ -53,25 +53,42 @@
       <section v-for="service in servicesWithOffers" :key="`section-${service.slug}`" class="offer-section">
         <div class="container">
           <div class="section-header">
-            <h2>{{ service.section_headline || 'Ofertas de ' + service.name }}</h2>
+            <h2 class="section-title">{{ service.section_headline || 'Ofertas de ' + service.name }}</h2>
             <router-link :to="`/ofertas/servico/${service.slug}`" class="view-all-btn">Ver todas as ofertas</router-link>
           </div>
           <Carousel v-bind="carouselSettings" :autoplay="getAutoplaySpeed(pageData.site_configuration.offer_carousel_speed)">
             <Slide v-for="offer in service.offers" :key="offer.id">
               <div class="carousel__item">
                 <div class="offer-card">
-                  <div class="offer-image-container"><img :src="`${backendUrl}${offer.image}`" :alt="offer.subtitle"></div>
+                  <div class="offer-image-container">
+                    <img :src="`${backendUrl}${offer.image}`" :alt="offer.subtitle">
+                  </div>
                   <div class="card-content">
                     <div class="card-content-top">
                       <span v-if="offer.promo_tag" class="promo-tag">{{ offer.promo_tag }}</span>
-                      <span class="package-details-card">{{ offer.title }}</span>
-                      <h3 class="offer-title-card">{{ offer.subtitle }}</h3>
+                      <span class="package-details-card">{{ offer.subtitle }}</span>
+                      <h3 class="offer-title-card">{{ offer.title }}</h3>
+                      <p class="origin-card" v-if="offer.origin"><i class="fa-solid fa-plane-departure"></i> Saindo de {{ offer.origin }}</p>
+                      <div class="duration-tags" v-if="offer.duration_days"><span>{{ offer.duration_days }} Dias / {{ offer.duration_nights }} Noites</span></div>
+                      <div class="offer-includes" v-if="offer.details">
+                        <!-- CORREÇÃO: Usando split('\n') para respeitar as quebras de linha -->
+                        <p v-for="(item, index) in offer.details.split('\n')" :key="index">
+                          <i class="fa-solid fa-check"></i>{{ item }}
+                        </p>
+                      </div>
                     </div>
                     <div class="card-content-bottom">
                       <div class="price-section">
-                         <span class="price-value">R$ {{ offer.price }}</span>
+                        <div class="savings-highlight" v-if="offer.original_price && offer.original_price > offer.price">Economize R$ {{ formatPrice(offer.original_price - offer.price) }}</div>
+                        <div class="price-original-line" v-if="offer.original_price"><span class="original-price">R$ {{ formatPrice(offer.original_price) }}</span></div>
+                        <div class="price-final-line">
+                          <span class="price-currency">R$</span>
+                          <span class="price-value">{{ formatPrice(offer.price) }}</span>
+                        </div>
+                        <span class="price-label">{{ offer.price_per_person ? 'por pessoa' : '' }}</span>
+                        <span class="taxes-info">{{ offer.taxes_included ? 'Taxas inclusas' : 'Taxas não inclusas' }}</span>
                       </div>
-                      <router-link :to="`/ofertas/${offer.slug}`" class="details-button">Reservar</router-link>
+                      <router-link :to="`/ofertas/${offer.slug}`" class="details-button" :class="{ highlighted: offer.highlight_button }">Reservar</router-link>
                     </div>
                   </div>
                 </div>
@@ -84,15 +101,15 @@
     </div>
 
     <section class="newsletter-section" :style="newsletterStyle">
-        <div class="newsletter-overlay"></div>
-        <div class="container newsletter-content">
-          <h2>{{ pageData.site_configuration.newsletter_headline }}</h2>
-          <p>{{ pageData.site_configuration.newsletter_subheadline }}</p>
-          <form class="newsletter-form" @submit.prevent="handleNewsletterSubmit">
-            <input type="email" placeholder="Digite seu melhor e-mail" v-model="newsletterEmail" required>
-            <button type="submit" class="newsletter-button">{{ pageData.site_configuration.newsletter_button_text }}</button>
-          </form>
-        </div>
+      <div class="newsletter-overlay"></div>
+      <div class="container newsletter-content">
+        <h2>{{ pageData.site_configuration.newsletter_headline }}</h2>
+        <p>{{ pageData.site_configuration.newsletter_subheadline }}</p>
+        <form class="newsletter-form" @submit.prevent="handleNewsletterSubmit">
+          <input type="email" placeholder="Digite seu melhor e-mail" v-model="newsletterEmail" required>
+          <button type="submit" class="newsletter-button">{{ pageData.site_configuration.newsletter_button_text }}</button>
+        </form>
+      </div>
     </section>
   </div>
 </template>
@@ -159,31 +176,35 @@ export default {
     getAutoplaySpeed(speed) {
       const speedMs = Number(speed);
       return !isNaN(speedMs) && speedMs > 0 ? speedMs : 0;
+    },
+    formatPrice(value) {
+      const number = parseFloat(value);
+      if (isNaN(number)) return value;
+      return number.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
   }
 };
 </script>
 
 <style scoped>
-/* Importa o CSS do Carrossel */
 @import 'vue3-carousel/dist/carousel.css';
 
 /* --- CORREÇÃO DO BANNER --- */
-.banner-carousel-section .carousel__item {
+.banner-carousel-section .carousel__slide {
   height: auto; /* A altura se ajusta ao conteúdo */
-  width: 100%;
-  color: white;
+}
+.banner-carousel-section .carousel__item {
+  line-height: 0; /* Remove espaço extra */
 }
 .banner-carousel-section .carousel__item img {
   width: 100%;
-  height: auto; /* A altura se ajusta para manter a proporção */
-  display: block; /* Remove espaço extra abaixo da imagem */
-  max-height: 70vh; /* Limita a altura máxima em telas grandes */
-  object-fit: cover; /* Garante que a imagem cubra a área se necessário */
+  height: auto;
+  max-height: 400px; /* Altura máxima para o banner, como sugerido */
+  object-fit: cover;
+  display: block;
 }
-/* ------------------------- */
 
-.carousel__pagination-button--active::after { background-color: var(--primary-color) !important; }
+/* ... (Estilos da Barra de Serviços e Formulário que já funcionam) ... */
 .services-bar { padding: 15px 0; border-bottom: 1px solid #eee; background-color: #fff; }
 .services-bar .container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
 .services-bar button { background: none; border: none; cursor: pointer; padding: 10px 15px; font-size: 1rem; display: flex; align-items: center; gap: 8px; transition: color 0.3s, border-color 0.3s; border-bottom: 3px solid transparent; }
@@ -199,33 +220,54 @@ export default {
 .custom-input-btn { text-align: left; background-color: #fff; cursor: pointer; display: flex; align-items: center; }
 .form-group.button-group { flex-grow: 0; flex-shrink: 0; min-width: auto; }
 .search-button { background-color: var(--primary-color); color: #fff; border: none; height: 48px; width: 50px; border-radius: 8px; cursor: pointer; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; }
-.room-selector-popup { position: absolute; top: 105%; left: 0; background: #fff; border: 1px solid #ccc; border-radius: 8px; padding: 15px; z-index: 100; min-width: 300px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-.room-item { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-.room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.guest-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-.guest-controls label span { font-size: 0.8rem; color: #777; }
-.stepper-btn { background-color: #f0f0f0; border: 1px solid #ccc; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; }
-.popup-actions { display: flex; justify-content: space-between; margin-top: 15px; }
-.add-room-btn, .apply-btn, .remove-room-btn { border: none; background: none; cursor: pointer; font-weight: bold; }
-.add-room-btn { color: var(--primary-color); }
-.apply-btn { background-color: var(--primary-color); color: #fff; padding: 8px 15px; border-radius: 5px; }
+
+/* --- ESTILOS CORRIGIDOS E COMPLETOS PARA OS CARDS DE OFERTA --- */
 .offer-section { padding: 60px 0; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.section-header h2 { font-size: 2.2rem; font-weight: 700; }
-.carousel__item { padding: 0 10px; }
-.offer-card { background: #fff; border-radius: 8px; overflow: hidden; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.section-title { font-size: 2.2rem; font-weight: 700; }
+.view-all-btn { font-weight: bold; }
+.carousel__slide { padding: 10px; display: flex; flex-direction: column; }
+.carousel__item { height: 100%; width: 100%; }
+.offer-card { background: #fff; border-radius: 12px; box-shadow: 0 6px 25px rgba(0,0,0,0.08); display: flex; flex-direction: column; text-align: left; width: 100%; height: 100%; transition: box-shadow 0.3s, transform 0.3s; }
+.offer-card:hover { transform: translateY(-5px); box-shadow: 0 12px 35px rgba(0,0,0,0.12); }
+.card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+.card-content-top { flex-grow: 1; }
+.card-content-bottom { margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0; }
 .offer-image-container img { width: 100%; height: 200px; object-fit: cover; }
-.card-content { padding: 20px; }
-.card-content-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0; }
-.price-value { font-size: 1.5rem; font-weight: bold; color: var(--primary-color); }
-.details-button { background-color: var(--primary-color); color: #fff; padding: 8px 16px; border-radius: 5px; font-weight: 500; }
-.newsletter-section { padding: 80px 0; background-size: cover; background-position: center; position: relative; color: #fff; text-align: center; }
+.promo-tag { display: inline-block; margin-bottom: 12px; background-color: #d1fae5; color: #065f46; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+.package-details-card { display: block; font-size: 0.8rem; color: #666; text-transform: uppercase; font-weight: 500; margin-bottom: 5px; }
+.offer-title-card { font-size: 1.25rem; font-weight: 700; color: #333; margin: 0 0 10px 0; line-height: 1.3; }
+.origin-card { font-size: 0.9rem; color: #777; margin: 8px 0; display: flex; align-items: center; gap: 5px; }
+.duration-tags { font-size: 0.9rem; color: #555; margin-bottom: 10px; }
+.offer-includes { font-size: 0.9rem; color: #555; line-height: 1.6; }
+.offer-includes p { margin: 0 0 5px 0; display: flex; align-items: center; }
+.offer-includes .fa-check { color: #198754; margin-right: 8px; }
+
+.price-section { text-align: right; }
+.savings-highlight { background-color: #28a745; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-bottom: 5px; }
+.price-original-line { font-size: 0.8rem; color: #777; }
+.original-price { text-decoration: line-through; }
+.price-final-line { display: flex; align-items: baseline; justify-content: flex-end; gap: 2px; }
+.price-currency { font-size: 1.1rem; font-weight: 500; color: #333; }
+.price-value { font-size: 2rem; font-weight: 700; color: var(--primary-color); }
+.price-label { font-size: 0.8rem; color: #777; display: block; }
+.taxes-info { font-size: 0.7rem; color: #777; display: block; margin-top: 2px; }
+
+.details-button { width: 100%; margin-top: 15px; padding: 14px; font-size: 1rem; font-weight: bold; border-radius: 8px; background-color: var(--primary-color); color: #fff; border: none; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; transition: all 0.2s ease-in-out; }
+.details-button.highlighted { background-color: #ffc107; color: #000; }
+.details-button:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+/* --- CORREÇÃO DA NEWSLETTER --- */
+.newsletter-section { padding: 60px 0; background-size: cover; background-position: center; position: relative; color: #fff; text-align: center; }
 .newsletter-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.6); }
 .newsletter-content { position: relative; z-index: 2; }
-.newsletter-form { margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
-.newsletter-form input { padding: 15px; width: 300px; border: none; border-radius: 5px; }
-.newsletter-button { padding: 15px 35px; border: none; border-radius: 50px; background-color: var(--primary-color); color: #fff; font-weight: bold; font-size: 1rem; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-.newsletter-button:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+.newsletter-content h2 { font-size: 2rem; margin-bottom: 10px; }
+.newsletter-content p { font-size: 1.1rem; margin-bottom: 25px; }
+.newsletter-form { display: flex; justify-content: center; max-width: 500px; margin: 0 auto; }
+.newsletter-form input { flex-grow: 1; padding: 15px; border: 1px solid #ccc; border-radius: 50px 0 0 50px; font-size: 1rem; outline: none; border-right: none; }
+.newsletter-button { padding: 15px 30px; border: none; background-color: var(--primary-color); color: white; font-size: 1rem; font-weight: bold; border-radius: 0 50px 50px 0; cursor: pointer; transition: opacity 0.2s; }
+.newsletter-button:hover { opacity: 0.9; }
+
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>
