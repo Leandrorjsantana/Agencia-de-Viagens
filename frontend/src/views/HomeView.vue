@@ -56,22 +56,28 @@
             <h2 class="section-title">{{ service.section_headline || 'Ofertas de ' + service.name }}</h2>
             <router-link :to="`/ofertas/servico/${service.slug}`" class="view-all-btn">Ver todas as ofertas</router-link>
           </div>
-          <Carousel v-bind="carouselSettings" :autoplay="getAutoplaySpeed(pageData.site_configuration.offer_carousel_speed)">
+          <Carousel v-bind="carouselSettings" :wrap-around="service.offers.length > 4" :autoplay="getAutoplaySpeed(pageData.site_configuration.offer_carousel_speed)">
             <Slide v-for="offer in service.offers" :key="offer.id">
               <div class="carousel__item">
                 <div class="offer-card">
                   <div class="offer-image-container">
                     <img :src="`${backendUrl}${offer.image}`" :alt="offer.subtitle">
+                    <div class="duration-on-image" v-if="offer.duration_days">
+                      <span>{{ offer.duration_days }} DIAS / {{ offer.duration_nights }} NOITES</span>
+                    </div>
                   </div>
                   <div class="card-content">
                     <div class="card-content-top">
                       <span v-if="offer.promo_tag" class="promo-tag">{{ offer.promo_tag }}</span>
+                      <!-- CORREÇÃO FINAL: Invertendo a ordem e o conteúdo das variáveis -->
                       <span class="package-details-card">{{ offer.subtitle }}</span>
                       <h3 class="offer-title-card">{{ offer.title }}</h3>
+                      <div class="hotel-info" v-if="offer.hotel_name">
+                        <span v-if="offer.hotel_rating" class="hotel-rating">{{ offer.hotel_rating }}</span>
+                        <span class="hotel-name">{{ offer.hotel_name }}</span>
+                      </div>
                       <p class="origin-card" v-if="offer.origin"><i class="fa-solid fa-plane-departure"></i> Saindo de {{ offer.origin }}</p>
-                      <div class="duration-tags" v-if="offer.duration_days"><span>{{ offer.duration_days }} Dias / {{ offer.duration_nights }} Noites</span></div>
                       <div class="offer-includes" v-if="offer.details">
-                        <!-- CORREÇÃO: Usando split('\n') para respeitar as quebras de linha -->
                         <p v-for="(item, index) in offer.details.split('\n')" :key="index">
                           <i class="fa-solid fa-check"></i>{{ item }}
                         </p>
@@ -79,14 +85,18 @@
                     </div>
                     <div class="card-content-bottom">
                       <div class="price-section">
-                        <div class="savings-highlight" v-if="offer.original_price && offer.original_price > offer.price">Economize R$ {{ formatPrice(offer.original_price - offer.price) }}</div>
-                        <div class="price-original-line" v-if="offer.original_price"><span class="original-price">R$ {{ formatPrice(offer.original_price) }}</span></div>
+                        <div class="savings-highlight" v-if="offer.original_price && offer.original_price > offer.price">
+                          Economize R$ {{ formatPrice(offer.original_price - offer.price) }}
+                        </div>
+                        <div class="price-original-line" v-if="offer.original_price">
+                          <span class="original-price">R$ {{ formatPrice(offer.original_price) }}</span>
+                        </div>
+                        <span class="price-label">{{ offer.price_per_person ? 'Preço por pessoa' : '' }}</span>
                         <div class="price-final-line">
                           <span class="price-currency">R$</span>
                           <span class="price-value">{{ formatPrice(offer.price) }}</span>
                         </div>
-                        <span class="price-label">{{ offer.price_per_person ? 'por pessoa' : '' }}</span>
-                        <span class="taxes-info">{{ offer.taxes_included ? 'Taxas inclusas' : 'Taxas não inclusas' }}</span>
+                        <span class="taxes-info">{{ offer.taxes_included ? 'Taxas e impostos inclusos' : 'Taxas e impostos não inclusos' }}</span>
                       </div>
                       <router-link :to="`/ofertas/${offer.slug}`" class="details-button" :class="{ highlighted: offer.highlight_button }">Reservar</router-link>
                     </div>
@@ -180,7 +190,7 @@ export default {
     formatPrice(value) {
       const number = parseFloat(value);
       if (isNaN(number)) return value;
-      return number.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      return new Intl.NumberFormat('pt-BR').format(number);
     }
   }
 };
@@ -189,22 +199,9 @@ export default {
 <style scoped>
 @import 'vue3-carousel/dist/carousel.css';
 
-/* --- CORREÇÃO DO BANNER --- */
-.banner-carousel-section .carousel__slide {
-  height: auto; /* A altura se ajusta ao conteúdo */
-}
-.banner-carousel-section .carousel__item {
-  line-height: 0; /* Remove espaço extra */
-}
-.banner-carousel-section .carousel__item img {
-  width: 100%;
-  height: auto;
-  max-height: 400px; /* Altura máxima para o banner, como sugerido */
-  object-fit: cover;
-  display: block;
-}
-
-/* ... (Estilos da Barra de Serviços e Formulário que já funcionam) ... */
+.banner-carousel-section .carousel__slide { height: auto; }
+.banner-carousel-section .carousel__item { line-height: 0; max-height: 400px; overflow: hidden; }
+.banner-carousel-section .carousel__item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .services-bar { padding: 15px 0; border-bottom: 1px solid #eee; background-color: #fff; }
 .services-bar .container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
 .services-bar button { background: none; border: none; cursor: pointer; padding: 10px 15px; font-size: 1rem; display: flex; align-items: center; gap: 8px; transition: color 0.3s, border-color 0.3s; border-bottom: 3px solid transparent; }
@@ -220,8 +217,6 @@ export default {
 .custom-input-btn { text-align: left; background-color: #fff; cursor: pointer; display: flex; align-items: center; }
 .form-group.button-group { flex-grow: 0; flex-shrink: 0; min-width: auto; }
 .search-button { background-color: var(--primary-color); color: #fff; border: none; height: 48px; width: 50px; border-radius: 8px; cursor: pointer; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; }
-
-/* --- ESTILOS CORRIGIDOS E COMPLETOS PARA OS CARDS DE OFERTA --- */
 .offer-section { padding: 60px 0; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .section-title { font-size: 2.2rem; font-weight: 700; }
@@ -233,31 +228,31 @@ export default {
 .card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
 .card-content-top { flex-grow: 1; }
 .card-content-bottom { margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0; }
+.offer-image-container { position: relative; }
 .offer-image-container img { width: 100%; height: 200px; object-fit: cover; }
-.promo-tag { display: inline-block; margin-bottom: 12px; background-color: #d1fae5; color: #065f46; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+.duration-on-image { position: absolute; bottom: 10px; left: 10px; background-color: rgba(0,0,0,0.6); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
+.promo-tag { display: inline-block; margin-bottom: 12px; background-color: #e6f7ff; color: #096dd9; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+/* CORREÇÃO FINAL: Invertendo os estilos dos títulos */
 .package-details-card { display: block; font-size: 0.8rem; color: #666; text-transform: uppercase; font-weight: 500; margin-bottom: 5px; }
-.offer-title-card { font-size: 1.25rem; font-weight: 700; color: #333; margin: 0 0 10px 0; line-height: 1.3; }
+.offer-title-card { font-size: 1.4rem; font-weight: 700; color: #333; margin: 0 0 10px 0; line-height: 1.3; }
+.hotel-info { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 0.9rem; }
+.hotel-rating { background-color: #003366; color: #fff; font-weight: bold; padding: 3px 8px; border-radius: 4px; }
 .origin-card { font-size: 0.9rem; color: #777; margin: 8px 0; display: flex; align-items: center; gap: 5px; }
-.duration-tags { font-size: 0.9rem; color: #555; margin-bottom: 10px; }
 .offer-includes { font-size: 0.9rem; color: #555; line-height: 1.6; }
-.offer-includes p { margin: 0 0 5px 0; display: flex; align-items: center; }
+.offer-includes p { margin: 0 0 2px 0; display: flex; align-items: center; }
 .offer-includes .fa-check { color: #198754; margin-right: 8px; }
-
 .price-section { text-align: right; }
-.savings-highlight { background-color: #28a745; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-bottom: 5px; }
-.price-original-line { font-size: 0.8rem; color: #777; }
+.savings-highlight { background-color: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; display: inline-block; margin-bottom: 8px; }
+.price-original-line { font-size: 0.9rem; color: #777; }
 .original-price { text-decoration: line-through; }
+.price-label { font-size: 0.8rem; color: #777; display: block; margin-top: -5px; }
 .price-final-line { display: flex; align-items: baseline; justify-content: flex-end; gap: 2px; }
 .price-currency { font-size: 1.1rem; font-weight: 500; color: #333; }
-.price-value { font-size: 2rem; font-weight: 700; color: var(--primary-color); }
-.price-label { font-size: 0.8rem; color: #777; display: block; }
+.price-value { font-size: 2.2rem; font-weight: 700; color: var(--primary-color); }
 .taxes-info { font-size: 0.7rem; color: #777; display: block; margin-top: 2px; }
-
-.details-button { width: 100%; margin-top: 15px; padding: 14px; font-size: 1rem; font-weight: bold; border-radius: 8px; background-color: var(--primary-color); color: #fff; border: none; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; transition: all 0.2s ease-in-out; }
+.details-button { width: 100%; margin-top: 15px; padding: 14px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; background-color: var(--primary-color); color: #fff; border: none; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; transition: all 0.2s ease-in-out; }
 .details-button.highlighted { background-color: #ffc107; color: #000; }
-.details-button:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-
-/* --- CORREÇÃO DA NEWSLETTER --- */
+.details-button:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(13, 110, 253, 0.4); }
 .newsletter-section { padding: 60px 0; background-size: cover; background-position: center; position: relative; color: #fff; text-align: center; }
 .newsletter-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.6); }
 .newsletter-content { position: relative; z-index: 2; }
@@ -267,7 +262,6 @@ export default {
 .newsletter-form input { flex-grow: 1; padding: 15px; border: 1px solid #ccc; border-radius: 50px 0 0 50px; font-size: 1rem; outline: none; border-right: none; }
 .newsletter-button { padding: 15px 30px; border: none; background-color: var(--primary-color); color: white; font-size: 1rem; font-weight: bold; border-radius: 0 50px 50px 0; cursor: pointer; transition: opacity 0.2s; }
 .newsletter-button:hover { opacity: 0.9; }
-
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>
