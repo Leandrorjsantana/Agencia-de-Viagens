@@ -22,15 +22,19 @@ class Offer(models.Model):
         help_text="Dimensão recomendada: 400x300 pixels"
     )
     details = models.TextField(blank=True, verbose_name="Detalhes Inclusos (um por linha)")
+    
+    # --- NOVO CAMPO ADICIONADO AQUI ---
+    long_description = models.TextField(
+        blank=True, 
+        verbose_name="Descrição Completa (para a página de detalhes)"
+    )
 
-    # --- NOVOS CAMPOS ADICIONADOS ---
     hotel_name = models.CharField(max_length=255, blank=True, verbose_name="Nome do Hotel (Opcional)")
     hotel_rating = models.DecimalField(
         max_digits=2, decimal_places=1, blank=True, null=True,
         verbose_name="Avaliação do Hotel (Ex: 8.5)",
         help_text="Use um número de 0.0 a 10.0"
     )
-    # --- FIM DA ADIÇÃO ---
 
     # Preços
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Preço Final")

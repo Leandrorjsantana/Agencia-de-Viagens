@@ -1,15 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
-// Importando as Páginas e o Layout da Área do Cliente
 import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
 import ClientAreaLayout from '../layouts/ClientAreaLayout.vue'
+// Importando a nossa nova página de detalhes
+import OfferDetailView from '../views/OfferDetailView.vue'
 
-// Componente genérico para páginas em construção
 const PlaceholderPage = { template: '<div class="container" style="padding: 50px 20px;"><h2>Página em Construção</h2><p>O conteúdo para esta seção estará disponível em breve.</p></div>' };
 
-// Função de "guarda" que protege as rotas
 const requireAuth = (to, from, next) => {
   if (!localStorage.getItem('accessToken')) {
     next({ name: 'login' });
@@ -19,10 +17,19 @@ const requireAuth = (to, from, next) => {
 };
 
 const routes = [
-  // Rotas Públicas
   { path: '/', name: 'home', component: HomeView },
   { path: '/register', name: 'register', component: RegisterView },
   { path: '/login', name: 'login', component: LoginView },
+  
+  // --- ROTA DINÂMICA ATUALIZADA ---
+  // Agora, qualquer URL como /ofertas/pacote-ceara vai carregar a nossa nova página.
+  { 
+    path: '/ofertas/:slug', 
+    name: 'offer-detail', 
+    component: OfferDetailView 
+  },
+  
+  { path: '/ofertas/servico/:slug', name: 'service-offers', component: PlaceholderPage },
   { path: '/experiencias', name: 'experiencias', component: PlaceholderPage },
   { path: '/destinos', name: 'destinos', component: PlaceholderPage },
   { path: '/servicos', name: 'servicos', component: PlaceholderPage },
@@ -31,15 +38,11 @@ const routes = [
   { path: '/contato', name: 'contato', component: PlaceholderPage },
   { path: '/ajuda', name: 'ajuda', component: PlaceholderPage },
   { path: '/televendas', name: 'televendas', component: PlaceholderPage },
-  { path: '/ofertas/:slug', name: 'offer-detail', component: PlaceholderPage },
-  { path: '/ofertas/servico/:slug', name: 'service-offers', component: PlaceholderPage },
 
-  // Rotas da Área do Cliente
   {
     path: '/area-cliente',
     component: ClientAreaLayout,
     beforeEnter: requireAuth,
-    // A mágica está aqui: esta "meta" informação diz ao App.vue para se esconder
     meta: { isClientArea: true },
     children: [
       { path: '', redirect: '/area-cliente/dashboard' },

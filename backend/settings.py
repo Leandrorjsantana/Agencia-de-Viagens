@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'leads.apps.LeadsConfig',
     'banners.apps.BannersConfig',
     'reservations.apps.ReservationsConfig',
+    'subscribers.apps.SubscribersConfig', # <-- ADICIONE ESTA LINHA
 ]
 
 MIDDLEWARE = [
@@ -98,9 +99,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- CORREÇÃO ADICIONADA AQUI ---
-# Define a autenticação JWT como o padrão para TODO o nosso projeto.
-# Agora, qualquer API que exija login saberá como ler o token.
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

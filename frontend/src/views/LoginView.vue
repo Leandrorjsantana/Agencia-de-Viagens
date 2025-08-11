@@ -32,17 +32,16 @@
 
 <script>
 import axios from 'axios';
+import { BACKEND_URL } from '../config';
 
 export default {
   name: 'LoginView',
-  props: {
-    backendUrl: String,
-  },
   data() {
     return {
       login: '',
       password: '',
       errorMessage: null,
+      backendUrl: BACKEND_URL,
     };
   },
   methods: {
@@ -55,14 +54,26 @@ export default {
         };
 
         const response = await axios.post(`${this.backendUrl}/api/v1/auth/login/`, payload);
-        
-        // --- CORREÇÃO AQUI: Procurando pela chave 'access' do JWT ---
+
         if (response.data.access) {
           localStorage.setItem('accessToken', response.data.access);
           localStorage.setItem('refreshToken', response.data.refresh);
           
           alert("Login realizado com sucesso!");
-          this.$router.push('/');
+
+          // --- A MÁGICA ACONTECE AQUI ---
+          // 1. Verificamos se existe uma página de redirecionamento na URL.
+          const redirectPath = this.$route.query.redirect;
+
+          if (redirectPath) {
+            // 2. Se existir, enviamos o cliente de volta para lá.
+            this.$router.push(redirectPath);
+          } else {
+            // 3. Se não, enviamos para a página inicial, como antes.
+            this.$router.push('/');
+          }
+          // --- FIM DA MÁGICA ---
+
         } else {
           this.errorMessage = "Resposta de login inválida do servidor.";
         }

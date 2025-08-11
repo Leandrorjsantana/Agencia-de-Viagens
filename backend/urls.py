@@ -13,9 +13,12 @@ urlpatterns = [
     path('api/v1/auth/', include('dj_rest_auth.urls')),
     path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),
     path('api/v1/accounts/', include('accounts.urls')),
-    
-    # --- CORREÇÃO ADICIONADA AQUI: Conectando as rotas do nosso app 'reservations' ---
     path('api/v1/reservations/', include('reservations.urls')),
+    path('api/v1/offers/', include('offers.urls')),
+    path('api/v1/subscribers/', include('subscribers.urls')),
+    
+    # Conectando as rotas do nosso app 'leads'
+    path('api/v1/leads/', include('leads.urls')),
 ]
 
 if settings.DEBUG:
