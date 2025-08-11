@@ -12,15 +12,16 @@ class OfferAdmin(admin.ModelAdmin):
     list_filter = ('service', 'is_active')
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ('offer_code',)
-    
-    # --- CORREÇÃO ADICIONADA AQUI ---
-    # Diz ao Django para permitir a busca por título, subtítulo ou código da oferta.
     search_fields = ('title', 'subtitle', 'offer_code')
 
     def save_model(self, request, obj, form, change):
+        # Se for uma nova oferta e ainda não tiver um código
         if not obj.pk and not obj.offer_code:
+            # Busca o prefixo nas configurações do site
             config = SiteConfiguration.objects.first()
             prefix = config.offer_code_prefix if config else 'OFR'
+            
+            # Gera uma parte aleatória para o código
             random_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
             obj.offer_code = f"{prefix}-{random_part}"
         

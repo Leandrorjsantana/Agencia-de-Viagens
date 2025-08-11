@@ -10,6 +10,7 @@ ALLOWED_HOSTS = []
 SITE_ID = 1
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,10 +36,9 @@ INSTALLED_APPS = [
     'services.apps.ServicesConfig',
     'offers.apps.OffersConfig',
     'blog.apps.BlogConfig',
-    'leads.apps.LeadsConfig',
     'banners.apps.BannersConfig',
     'reservations.apps.ReservationsConfig',
-    'subscribers.apps.SubscribersConfig', # <-- ADICIONE ESTA LINHA
+    'subscribers.apps.SubscribersConfig',
 ]
 
 MIDDLEWARE = [
@@ -105,6 +105,7 @@ REST_FRAMEWORK = {
     ),
 }
 
+# --- CORREÇÃO AQUI: Removendo a formatação de link inválida ---
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
@@ -120,4 +121,51 @@ REST_AUTH = {
     'USE_JWT': True,
     'LOGIN_SERIALIZER': 'accounts.serializers.CustomLoginSerializer',
     'REGISTER_SERIALIZER': 'accounts.serializers.RegisterSerializer',
+}
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Painel da Agência",
+    "site_header": "Agência de Viagens",
+    "site_brand": "Painel Administrativo",
+    "welcome_sign": "Bem-vindo ao painel de controlo da sua agência",
+    "copyright": "Sua Agência de Viagens",
+    "show_ui_builder": True,
+    "order_with_respect_to": [
+        "site_settings", "banners", "menus",
+        "services", "offers", "reservations",
+        "subscribers", "blog",
+        "auth", "accounts",
+    ],
+    "apps": {
+        "site_settings": {"name": "Configurações do Site", "icon": "fa fa-cog"},
+        "banners": {"name": "Gestão da Página Inicial", "icon": "fa fa-images"},
+        "menus": {"name": "Gestão de Menus", "icon": "fa fa-bars"},
+        "services": {"name": "Catálogo", "icon": "fa fa-concierge-bell"},
+        "offers": {"name": "Catálogo", "icon": "fa fa-tag"},
+        "reservations": {"name": "Vendas", "icon": "fa fa-file-invoice-dollar"},
+        "subscribers": {"name": "Marketing", "icon": "fa fa-envelope"},
+        "blog": {"name": "Marketing", "icon": "fa fa-rss"},
+        "accounts": {"name": "Administração", "icon": "fa fa-users-cog"},
+        "auth": {"name": "Administração", "icon": "fa fa-users"},
+    },
+    "icons": {
+        "auth.User": "fa fa-user",
+        "auth.Group": "fa fa-users",
+        "accounts.profile": "fa fa-id-card",
+        "banners.banner": "fa fa-image",
+        "menus.topbarlink": "fa fa-arrow-up",
+        "menus.menuitem": "fa fa-bars",
+        "menus.socialmedialink": "fa fa-share-alt",
+        "offers.offer": "fa fa-tags",
+        "reservations.reservation": "fa fa-file-signature",
+        "reservations.reservationdocument": "fa fa-file-alt",
+        "services.service": "fa fa-concierge-bell",
+        "site_settings.siteconfiguration": "fa fa-cogs",
+        "subscribers.subscriber": "fa fa-at",
+    },
+    "hide_apps": ["authtoken", "account", "socialaccount"],
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "default",
 }
