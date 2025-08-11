@@ -37,20 +37,30 @@
           </div>
         </div>
 
-        <div class="card-footer" v-if="reservation.documents.length > 0">
-          <h4>Documentos da Viagem:</h4>
-          <ul>
-            <li v-for="doc in reservation.documents" :key="doc.id">
-              <a
-                :href="getMediaUrl(doc.file)"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i class="fa-solid fa-file-arrow-down"></i>
-                {{ doc.description }}
-              </a>
-            </li>
-          </ul>
+        <div class="card-footer">
+          <div class="documents-section">
+            <h4>Documentos da Viagem:</h4>
+            <ul v-if="reservation.documents.length > 0">
+              <li v-for="doc in reservation.documents" :key="doc.id">
+                <a
+                  :href="getMediaUrl(doc.file)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i class="fa-solid fa-file-arrow-down"></i>
+                  {{ doc.description }}
+                </a>
+              </li>
+            </ul>
+            <p v-else>Nenhum documento disponível.</p>
+          </div>
+          <!-- NOVO: Botão de Upload que só aparece se o status for 'PENDING' -->
+          <div class="upload-action" v-if="reservation.status === 'PENDING'">
+            <button @click="openUploadModal(reservation.id)" class="upload-button">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              Enviar Comprovativo
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -59,6 +69,33 @@
       <i class="fa-solid fa-folder-open"></i>
       <h3>Nenhuma reserva encontrada</h3>
       <router-link to="/" class="explore-button">Explorar Destinos</router-link>
+    </div>
+  </div>
+
+  <!-- NOVO: Modal de Upload de Documentos -->
+  <div v-if="isUploadModalOpen" class="modal-overlay" @click.self="closeUploadModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Enviar Comprovativo</h2>
+        <button @click="closeUploadModal" class="close-button">&times;</button>
+      </div>
+      <form @submit.prevent="handleUploadSubmit" class="modal-form">
+        <div class="form-field">
+          <label for="doc-description">Descrição do Arquivo</label>
+          <input type="text" id="doc-description" v-model="uploadDescription" placeholder="Ex: Comprovativo PIX" required>
+        </div>
+        <div class="form-field">
+          <label for="doc-file">Selecione o Arquivo</label>
+          <input type="file" id="doc-file" @change="handleFileChange" required>
+        </div>
+        <div v-if="uploadError" class="error-message">{{ uploadError }}</div>
+        <div class="modal-actions">
+          <button type="button" @click="closeUploadModal" class="cancel-button">Cancelar</button>
+          <button type="submit" class="submit-button" :disabled="isUploading">
+            {{ isUploading ? 'Enviando...' : 'Enviar' }}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -75,13 +112,20 @@ export default {
       loading: true,
       errorMessage: null,
       backendUrl: BACKEND_URL,
+      // Novos estados para controlar o modal de upload
+      isUploadModalOpen: false,
+      currentReservationId: null,
+      uploadDescription: '',
+      uploadFile: null,
+      isUploading: false,
+      uploadError: null,
     };
   },
   async created() {
     await this.fetchReservations();
   },
   methods: {
-    getMediaUrl, // função importada para montar URLs corretas
+    getMediaUrl, // Sua função importada para montar URLs corretas
 
     getAuthHeaders() {
       const token = localStorage.getItem("accessToken");
@@ -111,6 +155,54 @@ export default {
       const options = { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" };
       return date.toLocaleDateString("pt-BR", options);
     },
+
+    // --- NOVOS MÉTODOS PARA O MODAL ---
+    openUploadModal(reservationId) {
+      this.currentReservationId = reservationId;
+      this.isUploadModalOpen = true;
+      this.uploadError = null;
+    },
+    closeUploadModal() {
+      this.isUploadModalOpen = false;
+      this.uploadDescription = '';
+      this.uploadFile = null;
+    },
+    handleFileChange(event) {
+      this.uploadFile = event.target.files[0];
+    },
+    async handleUploadSubmit() {
+      if (!this.uploadFile) {
+        this.uploadError = "Por favor, selecione um ficheiro.";
+        return;
+      }
+      this.isUploading = true;
+      this.uploadError = null;
+
+      const formData = new FormData();
+      formData.append('description', this.uploadDescription);
+      formData.append('file', this.uploadFile);
+
+      try {
+        const headers = this.getAuthHeaders();
+        headers['Content-Type'] = 'multipart/form-data';
+
+        await axios.post(
+          `${this.backendUrl}/api/v1/reservations/${this.currentReservationId}/upload-document/`,
+          formData,
+          { headers: headers }
+        );
+        
+        alert("Comprovativo enviado com sucesso!");
+        this.closeUploadModal();
+        await this.fetchReservations();
+
+      } catch (error) {
+        this.uploadError = "Ocorreu um erro ao enviar o ficheiro. Tente novamente.";
+        console.error("Erro no upload:", error);
+      } finally {
+        this.isUploading = false;
+      }
+    }
   },
 };
 </script>
@@ -131,12 +223,28 @@ export default {
 .card-body { display: flex; gap: 20px; padding: 20px; }
 .offer-image img, .image-placeholder { width: 150px; height: 100px; object-fit: cover; border-radius: 8px; background-color: #eee; }
 .reservation-details p { margin: 0 0 10px 0; }
-.card-footer { padding: 20px; background-color: #f8f9fa; border-top: 1px solid #e9ecef; }
-.card-footer h4 { margin: 0 0 10px 0; }
-.card-footer ul { list-style: none; padding: 0; margin: 0; }
-.card-footer li a { color: var(--primary-color); text-decoration: none; font-weight: 500; }
-.card-footer li a i { margin-right: 8px; }
+.card-footer { padding: 20px; background-color: #f8f9fa; border-top: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; }
+.documents-section h4 { margin: 0 0 10px 0; }
+.documents-section ul { list-style: none; padding: 0; margin: 0; }
+.documents-section li a { color: var(--primary-color); text-decoration: none; font-weight: 500; }
+.documents-section li a i { margin-right: 8px; }
+.upload-button { background-color: var(--primary-color); color: #fff; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .no-reservations { text-align: center; padding: 50px; background: #fff; border-radius: 12px; }
 .no-reservations i { font-size: 3rem; color: #ccc; }
 .explore-button { display: inline-block; margin-top: 20px; padding: 12px 25px; background-color: var(--primary-color); color: #fff; border-radius: 50px; text-decoration: none; font-weight: bold; }
+
+/* Estilos do Modal */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+.modal-header h2 { margin: 0; }
+.close-button { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+.modal-form .form-field { margin-bottom: 20px; }
+.modal-form label { display: block; margin-bottom: 8px; font-weight: 500; }
+.modal-form input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
+.cancel-button, .submit-button { padding: 10px 20px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
+.cancel-button { background-color: #f0f0f0; }
+.submit-button { background-color: var(--primary-color); color: #fff; }
+.submit-button:disabled { background-color: #ccc; }
 </style>

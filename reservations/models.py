@@ -36,9 +36,24 @@ class Reservation(models.Model):
         verbose_name_plural = "Reservas"
 
 class ReservationDocument(models.Model):
+    # NOVO: Campo para identificar quem fez o upload
+    UPLOADED_BY_CHOICES = [
+        ('ADMIN', 'Admin'),
+        ('CLIENT', 'Cliente'),
+    ]
+
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name='documents', verbose_name="Reserva")
-    description = models.CharField(max_length=100, verbose_name="Descrição do Documento (ex: Voucher, Bilhete Aéreo)")
+    description = models.CharField(max_length=100, verbose_name="Descrição do Documento (ex: Voucher, Comprovante)")
     file = models.FileField(upload_to='reservation_documents/', verbose_name="Arquivo")
+    
+    # NOVO: Campo com valor padrão 'ADMIN'
+    uploaded_by = models.CharField(
+        max_length=10, 
+        choices=UPLOADED_BY_CHOICES, 
+        default='ADMIN', 
+        verbose_name="Enviado por"
+    )
+    
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -1,0 +1,28 @@
+/* core/static/core/css/admin_custom.css */
+
+/* Define a aparência do nosso botão personalizado */
+.button-link {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #0d6efd; /* Um azul primário, como o da Decolar */
+    color: #fff !important; /* !important para garantir que a cor do texto seja branca */
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Efeito ao passar o mouse por cima */
+.button-link:hover {
+    background-color: #0b5ed7; /* Um tom de azul um pouco mais escuro */
+    color: #fff !important;
+}
+
+/* Um estilo um pouco diferente para o botão de comprovante do cliente */
+.button-link.view-only {
+    background-color: #198754; /* Verde, para diferenciar */
+}
+
+.button-link.view-only:hover {
+    background-color: #157347;
+}
