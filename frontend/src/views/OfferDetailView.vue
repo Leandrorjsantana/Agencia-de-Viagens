@@ -62,6 +62,63 @@
       <p>Não foi possível encontrar a oferta solicitada.</p>
     </div>
   </div>
+
+  <div v-if="isReservationModalOpen" class="modal-overlay" @click.self="closeReservationModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Confirmar sua Reserva</h2>
+        <button @click="closeReservationModal" class="close-button">&times;</button>
+      </div>
+      <form @submit.prevent="handleReservationSubmit" class="modal-form">
+        <p class="form-intro">Os seus dados foram pré-preenchidos. Por favor, confirme as informações da sua viagem.</p>
+        
+        <fieldset class="form-section">
+          <legend>Seus Dados</legend>
+          <div class="form-field">
+            <label>Nome Completo</label>
+            <input type="text" :value="userProfile.profile.full_name" disabled>
+          </div>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>E-mail</label>
+              <input type="email" :value="userProfile.email" disabled>
+            </div>
+            <div class="form-field">
+              <label>Telefone</label>
+              <input type="tel" :value="userProfile.profile.phone_number" disabled>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Detalhes da Viagem</legend>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="start-date">Data de Início</label>
+              <input type="date" id="start-date" v-model="reservationForm.start_date" required>
+            </div>
+            <div class="form-field">
+              <label for="end-date">Data de Fim</label>
+              <input type="date" id="end-date" v-model="reservationForm.end_date" required>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="notes">Observações (opcional)</label>
+            <textarea id="notes" v-model="reservationForm.notes" rows="3" placeholder="Alguma preferência ou pedido especial?"></textarea>
+          </div>
+        </fieldset>
+        
+        <div v-if="reservationError" class="error-message">{{ reservationError }}</div>
+
+        <div class="modal-actions">
+          <button type="button" @click="closeReservationModal" class="cancel-button">Cancelar</button>
+          <button type="submit" class="submit-button" :disabled="isSubmitting">
+            {{ isSubmitting ? 'A processar...' : 'Confirmar Reserva' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -76,6 +133,15 @@ export default {
       loading: true,
       error: false,
       backendUrl: BACKEND_URL,
+      isReservationModalOpen: false,
+      isSubmitting: false,
+      reservationError: null,
+      userProfile: null,
+      reservationForm: {
+        start_date: '',
+        end_date: '',
+        notes: '',
+      },
     };
   },
   async created() {
@@ -83,6 +149,11 @@ export default {
   },
   methods: {
     getMediaUrl,
+    getAuthHeaders() {
+      const token = localStorage.getItem('accessToken');
+      if (!token) return {};
+      return { 'Authorization': `Bearer ${token}` };
+    },
     async fetchOfferDetails() {
       this.loading = true;
       this.error = false;
@@ -102,12 +173,48 @@ export default {
       if (isNaN(number)) return value;
       return new Intl.NumberFormat('pt-BR').format(number);
     },
-    handleReserveClick() {
+    async handleReserveClick() {
       const token = localStorage.getItem('accessToken');
       if (token) {
-        alert('Utilizador está logado! Próximo passo: formulário de reserva pré-preenchido.');
+        try {
+          const response = await axios.get(`${this.backendUrl}/api/v1/accounts/profile/`, {
+            headers: this.getAuthHeaders()
+          });
+          this.userProfile = response.data;
+          this.isReservationModalOpen = true;
+        } catch (error) {
+          alert("Não foi possível carregar os seus dados. Por favor, tente novamente.");
+          console.error("Erro ao buscar perfil para reserva:", error);
+        }
       } else {
         this.$router.push({ name: 'login', query: { redirect: this.$route.fullPath } });
+      }
+    },
+    closeReservationModal() {
+      this.isReservationModalOpen = false;
+    },
+    async handleReservationSubmit() {
+      this.isSubmitting = true;
+      this.reservationError = null;
+      
+      const payload = {
+        ...this.reservationForm,
+        offer: this.offer.id,
+        total_price: this.offer.price,
+      };
+
+      try {
+        await axios.post(`${this.backendUrl}/api/v1/reservations/create/`, payload, {
+          headers: this.getAuthHeaders()
+        });
+        alert('Reserva solicitada com sucesso! Pode acompanhar o status na sua área de cliente.');
+        this.closeReservationModal();
+        this.$router.push('/area-cliente/reservas');
+      } catch (error) {
+        this.reservationError = 'Ocorreu um erro ao criar sua reserva. Tente novamente.';
+        console.error("Erro ao criar reserva:", error);
+      } finally {
+        this.isSubmitting = false;
       }
     }
   }
@@ -115,6 +222,7 @@ export default {
 </script>
 
 <style scoped>
+/* Estilos da página de detalhes */
 .offer-detail-page { padding: 40px 0; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 .offer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
@@ -142,4 +250,25 @@ export default {
 .taxes-info { font-size: 0.7rem; color: #777; display: block; margin-top: 2px; }
 .reserve-button { width: 100%; margin-top: 25px; padding: 16px; font-size: 1.2rem; font-weight: bold; border-radius: 8px; background-color: var(--primary-color); color: #fff; border: none; cursor: pointer; transition: all 0.2s ease-in-out; }
 .reserve-button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(13, 110, 253, 0.4); }
+
+/* Estilos do Modal */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+.modal-content { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 25px; }
+.modal-header h2 { margin: 0; font-size: 1.5rem; }
+.close-button { background: none; border: none; font-size: 2rem; cursor: pointer; line-height: 1; color: #888; }
+.form-intro { margin-bottom: 25px; background-color: #f8f9fa; padding: 15px; border-radius: 8px; }
+.form-section { border: none; padding: 0; margin-bottom: 20px; }
+.form-section legend { font-weight: 600; font-size: 1.1rem; margin-bottom: 15px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.modal-form .form-field { margin-bottom: 20px; }
+.modal-form label { display: block; margin-bottom: 8px; font-weight: 500; }
+.modal-form input, .modal-form textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; box-sizing: border-box; }
+.modal-form input:disabled { background-color: #f0f0f0; cursor: not-allowed; }
+.modal-form textarea { resize: vertical; min-height: 80px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+.cancel-button, .submit-button { padding: 12px 25px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; }
+.cancel-button { background-color: #f0f0f0; color: #333; }
+.submit-button { background-color: var(--primary-color); color: #fff; }
+.submit-button:disabled { background-color: #ccc; cursor: not-allowed; }
 </style>
