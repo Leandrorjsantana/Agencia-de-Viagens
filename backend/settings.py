@@ -94,6 +94,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -105,7 +106,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-# --- CORREÇÃO AQUI: Removendo a formatação de link inválida ---
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
@@ -130,6 +130,13 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Bem-vindo ao painel de controlo da sua agência",
     "copyright": "Sua Agência de Viagens",
     "show_ui_builder": True,
+    "topmenu_links": [
+        {"name": "Ver Site", "url": "http://localhost:8080/", "new_window": True},
+        {"model": "auth.User"},
+        {"app": "jazzmin", "name": "Personalizar UI", "icon": "fas fa-cog"},
+    ],
+    "custom_css": "core/css/admin_custom.css",
+    "custom_js": "core/js/admin_custom.js",
     "order_with_respect_to": [
         "site_settings", "banners", "menus",
         "services", "offers", "reservations",
@@ -166,6 +173,37 @@ JAZZMIN_SETTINGS = {
     "hide_apps": ["authtoken", "account", "socialaccount"],
 }
 
+# --- SUAS PERSONALIZAÇÕES DE UI RESTAURADAS AQUI ---
 JAZZMIN_UI_TWEAKS = {
-    "theme": "default",
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",
+    "navbar": "navbar-white navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": True,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": True,
+    "theme": "lumen",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    },
+    "related_modal_active": True,
+    "actions_sticky_top": True
 }

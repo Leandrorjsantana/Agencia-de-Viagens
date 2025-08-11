@@ -12,15 +12,33 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
         ('Informações de Contato Públicas', {
             'fields': ('public_email', 'public_whatsapp')
         }),
+        # --- SECÇÃO RESTAURADA AQUI ---
         ('Configurações de Códigos', {
             'fields': ('offer_code_prefix',)
         }),
         ('Estilo Global', {
             'fields': ('main_font', 'primary_color')
         }),
+        ('Seção de Busca (Hero)', {
+            'fields': ('hero_background_color', 'hero_background_image')
+        }),
+        ('Seção de Newsletter', {
+            'fields': ('newsletter_headline', 'newsletter_subheadline', 'newsletter_button_text', 'newsletter_background_color', 'newsletter_background_image')
+        }),
+        ('Configurações dos Carrosséis', {
+            'fields': ('banner_autoplay_speed', 'offer_carousel_speed')
+        }),
         ('Cores Detalhadas', {
             'classes': ('collapse',),
-            'fields': (('top_bar_bg_color', 'top_bar_text_color'), ('main_header_bg_color', 'main_header_text_color'), ('footer_bg_color', 'footer_text_color'))
+            # --- LAYOUT DAS CORES CORRIGIDO (UM POR LINHA) ---
+            'fields': (
+                'top_bar_bg_color', 
+                'top_bar_text_color',
+                'main_header_bg_color', 
+                'main_header_text_color',
+                'footer_bg_color', 
+                'footer_text_color',
+            )
         }),
         ('Rodapé', {
             'fields': ('footer_text',)

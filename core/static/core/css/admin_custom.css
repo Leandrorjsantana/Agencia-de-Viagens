@@ -1,28 +1,50 @@
 /* core/static/core/css/admin_custom.css */
 
-/* Define a aparência do nosso botão personalizado */
+/* Estilos para o botão "Ver" personalizado nas reservas */
 .button-link {
     display: inline-block;
     padding: 6px 12px;
-    background-color: #0d6efd; /* Um azul primário, como o da Decolar */
-    color: #fff !important; /* !important para garantir que a cor do texto seja branca */
+    background-color: #0d6efd;
+    color: #fff !important;
     border-radius: 4px;
     text-decoration: none;
     font-weight: bold;
     transition: background-color 0.2s ease-in-out;
 }
-
-/* Efeito ao passar o mouse por cima */
 .button-link:hover {
-    background-color: #0b5ed7; /* Um tom de azul um pouco mais escuro */
+    background-color: #0b5ed7;
     color: #fff !important;
 }
-
-/* Um estilo um pouco diferente para o botão de comprovante do cliente */
 .button-link.view-only {
-    background-color: #198754; /* Verde, para diferenciar */
+    background-color: #198754;
 }
-
 .button-link.view-only:hover {
     background-color: #157347;
+}
+
+/* --- CORREÇÃO DEFINITIVA PARA AS AÇÕES RECENTES --- */
+/* Alvo: O corpo de cada item na timeline de Ações Recentes */
+#recent-actions-module .timeline-body {
+    line-height: 1.5; /* Melhora o espaçamento geral entre as linhas */
+}
+
+/* Alvo: O link principal da ação (ex: "Youtube") */
+#recent-actions-module .timeline-body a {
+    font-weight: bold;
+    display: block; /* Força o link a ocupar a sua própria linha */
+    margin-bottom: 4px; /* Adiciona um pequeno espaço abaixo do link */
+}
+
+/* Alvo: O tempo (ex: "19 minutos ago") */
+#recent-actions-module .timeline-body .float-right {
+    float: none !important; /* Remove o alinhamento à direita forçadamente */
+    display: block; /* Força o tempo a ocupar a sua própria linha */
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 6px; /* Adiciona espaço abaixo do tempo */
+}
+
+/* Alvo: A descrição da ação (ex: "Adicionado...") */
+#recent-actions-module .timeline-body .text-muted {
+    font-size: 0.9rem;
 }
