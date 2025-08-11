@@ -9,7 +9,9 @@
 
     <div class="filter-bar" v-if="pageData && pageData.services">
       <div class="container filter-container">
-        <router-link to="/ofertas/todos" class="filter-btn" exact-active-class="active">Todos</router-link>
+        <!-- CORREÇÃO AQUI: O link agora aponta para a rota de serviço correta -->
+        <router-link to="/ofertas/servico/todos" class="filter-btn" exact-active-class="active">Todos</router-link>
+        
         <router-link 
           v-for="service in pageData.services" 
           :key="service.id" 
@@ -62,8 +64,10 @@ export default {
     serviceName() {
       const slug = this.$route.params.slug;
       if (!this.pageData || !this.pageData.services) return '...';
+      // Se o slug for 'todos', o nome do serviço é 'Todas as Ofertas'
+      if (slug === 'todos') return 'Todas as Ofertas';
       const service = this.pageData.services.find(s => s.slug === slug);
-      return service ? service.name : 'Todas as Ofertas';
+      return service ? service.name : '...';
     }
   },
   watch: {
@@ -95,6 +99,7 @@ export default {
 </script>
 
 <style scoped>
+/* O seu CSS que já está a funcionar perfeitamente */
 .page-header {
   padding: 50px 0;
   background-color: #003366;
@@ -103,11 +108,10 @@ export default {
 }
 .page-header h1 { font-size: 2.8rem; }
 
-/* Filtro agora rola junto com a página */
 .filter-bar {
   background-color: #fff;
   border-bottom: 1px solid #e6e6e6;
-  position: relative; /* antes era sticky */
+  position: relative;
   top: auto;
   z-index: 1;
 }
