@@ -1,11 +1,10 @@
 <template>
   <div v-if="pageData">
-    <!-- BANNER CAROUSEL -->
     <section class="banner-carousel-section" v-if="pageData.banners && pageData.banners.length > 0">
       <Carousel :autoplay="getAutoplaySpeed(pageData.site_configuration.banner_autoplay_speed)" :wrap-around="true">
         <Slide v-for="banner in pageData.banners" :key="banner.id">
           <a :href="banner.link_url || '#'" target="_blank" rel="noopener noreferrer" class="carousel__item">
-            <img class="banner-img" :src="`${backendUrl}${banner.image}`" :alt="banner.title">
+            <img :src="`${backendUrl}${banner.image}`" :alt="banner.title">
           </a>
         </Slide>
         <template #addons>
@@ -15,7 +14,6 @@
       </Carousel>
     </section>
 
-    <!-- MENU DE SERVIÇOS -->
     <div class="services-bar" v-if="pageData.services && pageData.services.length > 0">
       <div class="container">
         <button v-for="service in pageData.services" :key="service.slug" @click="activeTab = service.slug" :class="{ active: activeTab === service.slug }">
@@ -25,7 +23,6 @@
       </div>
     </div>
 
-    <!-- HERO / FORMULÁRIO -->
     <main class="hero-section" :style="heroStyle">
       <div class="container">
         <div class="booking-form-container">
@@ -33,69 +30,16 @@
             <div v-for="service in pageData.services" :key="`form-${service.slug}`">
               <transition name="fade">
                 <div v-if="activeTab === service.slug" class="form-panel">
-                  <!-- FORM DE HOSPEDAGENS -->
                   <div v-if="activeTab === 'hospedagens'" class="dynamic-form-grid">
-                    <div class="form-group destination-group">
-                      <label>Cidade, hotel ou destino</label>
-                      <input type="text" placeholder="Ex: Rio de Janeiro" v-model="formData.destination">
-                    </div>
-                    <div class="form-group date-group">
-                      <label>Entrada</label>
-                      <input type="date" v-model="formData.checkin">
-                    </div>
-                    <div class="form-group date-group">
-                      <label>Saída</label>
-                      <input type="date" v-model="formData.checkout">
-                    </div>
-                    <!-- CORREÇÃO: O grupo de hóspedes agora é um container de posicionamento -->
-                    <div class="form-group guests-group">
-                      <label>Quartos e Hóspedes</label>
-                      <button type="button" class="custom-input-btn" @click="isRoomSelectorOpen = !isRoomSelectorOpen">
-                        {{ roomsDisplayText }}
-                      </button>
-                      <div v-if="isRoomSelectorOpen" class="room-selector-popup">
-                        <div v-for="(room, index) in rooms" :key="index" class="room-item">
-                          <div class="room-header">
-                            <strong>Quarto {{ index + 1 }}</strong>
-                            <button type="button" class="remove-room-btn" v-if="rooms.length > 1" @click="removeRoom(index)">Remover</button>
-                          </div>
-                          <div class="guest-controls">
-                            <label>Adultos <span>+18 anos</span></label>
-                            <div>
-                              <button type="button" @click="room.adults > 1 ? room.adults-- : null" class="stepper-btn">-</button>
-                              <span>{{ room.adults }}</span>
-                              <button type="button" @click="room.adults++" class="stepper-btn">+</button>
-                            </div>
-                          </div>
-                          <div class="guest-controls">
-                            <label>Crianças <span>0-17 anos</span></label>
-                            <div>
-                              <button type="button" @click="room.children > 0 ? room.children-- : null" class="stepper-btn">-</button>
-                              <span>{{ room.children }}</span>
-                              <button type="button" @click="room.children++" class="stepper-btn">+</button>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="popup-actions">
-                          <button type="button" class="add-room-btn" @click="addRoom">Adicionar quarto</button>
-                          <button type="button" class="apply-btn" @click="isRoomSelectorOpen = false">Aplicar</button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group button-group">
-                      <button type="submit" class="search-button" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </div>
+                    <div class="form-group destination-group"><label>Cidade, hotel ou destino</label><input type="text" placeholder="Ex: Rio de Janeiro" v-model="formData.destination"></div>
+                    <div class="form-group date-group"><label>Entrada</label><input type="date" v-model="formData.checkin"></div>
+                    <div class="form-group date-group"><label>Saída</label><input type="date" v-model="formData.checkout"></div>
+                    <div class="form-group guests-group"><label>Quartos e Hóspedes</label><button type="button" class="custom-input-btn" @click="isRoomSelectorOpen = !isRoomSelectorOpen">{{ roomsDisplayText }}</button><div v-if="isRoomSelectorOpen" class="room-selector-popup"><div v-for="(room, index) in rooms" :key="index" class="room-item"><div class="room-header"><strong>Quarto {{ index + 1 }}</strong><button type="button" class="remove-room-btn" v-if="rooms.length > 1" @click="removeRoom(index)">Remover</button></div><div class="guest-controls"><label>Adultos <span>+18 anos</span></label><div><button type="button" @click="room.adults > 1 ? room.adults-- : null" class="stepper-btn">-</button><span>{{ room.adults }}</span><button type="button" @click="room.adults++" class="stepper-btn">+</button></div></div><div class="guest-controls"><label>Crianças <span>0-17 anos</span></label><div><button type="button" @click="room.children > 0 ? room.children-- : null" class="stepper-btn">-</button><span>{{ room.children }}</span><button type="button" @click="room.children++" class="stepper-btn">+</button></div></div></div><div class="popup-actions"><button type="button" class="add-room-btn" @click="addRoom">Adicionar quarto</button><button type="button" class="apply-btn" @click="isRoomSelectorOpen = false">Aplicar</button></div></div></div>
+                    <div class="form-group button-group"><button type="submit" class="search-button" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button></div>
                   </div>
-
-                  <!-- FORM PADRÃO -->
                   <div v-else class="dynamic-form-grid">
-                    <div v-for="(field, index) in service.form_fields" :key="index" class="form-group">
-                      <label :for="`${service.slug}-${field.name}`">{{ field.label }}</label>
-                      <input :type="field.type" :id="`${service.slug}-${field.name}`" :placeholder="field.placeholder || ''" v-model="formData[field.name]">
-                    </div>
-                    <div class="form-group button-group">
-                      <button type="submit" class="search-button" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </div>
+                    <div v-for="(field, index) in service.form_fields" :key="index" class="form-group"><label :for="`${service.slug}-${field.name}`">{{ field.label }}</label><input :type="field.type" :id="`${service.slug}-${field.name}`" :placeholder="field.placeholder || ''" v-model="formData[field.name]"></div>
+                    <div class="form-group button-group"><button type="submit" class="search-button" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button></div>
                   </div>
                 </div>
               </transition>
@@ -105,7 +49,6 @@
       </div>
     </main>
 
-    <!-- SEÇÕES DE OFERTAS -->
     <div class="content-sections">
       <section v-for="service in servicesWithOffers" :key="`section-${service.slug}`" class="offer-section">
         <div class="container">
@@ -125,7 +68,6 @@
       </section>
     </div>
 
-    <!-- NEWSLETTER -->
     <section class="newsletter-section" :style="newsletterStyle">
       <div class="newsletter-overlay"></div>
       <div class="container newsletter-content">
@@ -245,39 +187,39 @@ export default {
 <style scoped>
 @import 'vue3-carousel/dist/carousel.css';
 
-.banner-carousel-section .carousel__slide { height: auto; }
-.banner-carousel-section .carousel__item { line-height: 0; max-height: 350px; overflow: hidden; }
-.banner-carousel-section .carousel__item .banner-img { width: 100%; height: 350px; object-fit: cover; display: block; }
-@media (max-width: 600px) { .banner-carousel-section .carousel__item { max-height: 220px; } .banner-carousel-section .carousel__item .banner-img { height: 220px; } }
-.services-bar { padding: 15px 0; border-bottom: 1px solid #eee; background-color: #fff; font-family: 'Poppins', sans-serif; }
+/* --- CORREÇÃO DO BANNER --- */
+.banner-carousel-section .carousel__slide {
+  height: auto;
+}
+.banner-carousel-section .carousel__item {
+  line-height: 0;
+  max-height: 400px; /* Altura máxima para o slide, como sugerido */
+  overflow: hidden; /* Garante que nada ultrapasse a altura máxima */
+}
+.banner-carousel-section .carousel__item img {
+  width: 100%;
+  height: 100%; /* Faz a imagem preencher o container do slide */
+  object-fit: cover;
+  display: block;
+}
+/* --- FIM DA CORREÇÃO --- */
+
+.services-bar { padding: 15px 0; border-bottom: 1px solid #eee; background-color: #fff; }
 .services-bar .container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-.services-bar button { background: none; border: none; cursor: pointer; padding: 10px 15px; font-size: 1rem; font-family: inherit; display: flex; align-items: center; gap: 8px; transition: color 0.3s, border-color 0.3s; border-bottom: 3px solid transparent; }
+.services-bar button { background: none; border: none; cursor: pointer; padding: 10px 15px; font-size: 1rem; display: flex; align-items: center; gap: 8px; transition: color 0.3s, border-color 0.3s; border-bottom: 3px solid transparent; }
 .services-bar button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 .hero-section { background-size: cover; background-position: center; padding: 60px 0; }
 .booking-form-container { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 .dynamic-form-grid { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }
 .form-group { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 140px; }
 .form-group.destination-group { flex-grow: 2; min-width: 250px; }
-.form-group.guests-group { min-width: 220px; position: relative; } /* CORREÇÃO: Posição relativa para o popup */
+.form-group.guests-group { min-width: 220px; position: relative; }
 .form-group label { margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; }
 .form-group input, .form-group .custom-input-btn { height: 48px; width: 100%; padding: 0 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
 .custom-input-btn { text-align: left; background-color: #fff; cursor: pointer; display: flex; align-items: center; }
 .form-group.button-group { flex-grow: 0; flex-shrink: 0; min-width: auto; }
 .search-button { background-color: var(--primary-color); color: #fff; border: none; height: 48px; width: 50px; border-radius: 8px; cursor: pointer; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; }
-/* --- ESTILOS CORRIGIDOS PARA O POPUP --- */
-.room-selector-popup {
-  position: absolute;
-  top: 100%; /* Aparece logo abaixo do botão */
-  left: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-  padding: 20px;
-  z-index: 100; /* Garante que fique por cima de tudo */
-  width: 320px;
-  margin-top: 5px;
-}
+.room-selector-popup { position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); padding: 20px; z-index: 100; width: 320px; margin-top: 5px; }
 .room-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
 .room-item:last-child { border-bottom: none; margin-bottom: 0; }
 .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -290,7 +232,6 @@ export default {
 .add-room-btn, .apply-btn { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--primary-color); cursor: pointer; font-weight: bold; }
 .add-room-btn { background: #fff; color: var(--primary-color); }
 .apply-btn { background: var(--primary-color); color: #fff; }
-/* --- FIM DOS ESTILOS DO POPUP --- */
 .offer-section { padding: 60px 0; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .section-title { font-size: 2.2rem; font-weight: 700; }

@@ -7,11 +7,10 @@
       </div>
     </div>
 
+    <!-- FILTRO NORMAL -->
     <div class="filter-bar" v-if="pageData && pageData.services">
       <div class="container filter-container">
-        <!-- CORREÇÃO AQUI: O link agora aponta para a rota de serviço correta -->
         <router-link to="/ofertas/servico/todos" class="filter-btn" exact-active-class="active">Todos</router-link>
-        
         <router-link 
           v-for="service in pageData.services" 
           :key="service.id" 
@@ -50,9 +49,7 @@ import { BACKEND_URL } from '../config';
 export default {
   name: 'ServiceOffersView',
   components: { OfferCard },
-  props: {
-    pageData: Object,
-  },
+  props: { pageData: Object },
   data() {
     return {
       offers: [],
@@ -64,14 +61,13 @@ export default {
     serviceName() {
       const slug = this.$route.params.slug;
       if (!this.pageData || !this.pageData.services) return '...';
-      // Se o slug for 'todos', o nome do serviço é 'Todas as Ofertas'
       if (slug === 'todos') return 'Todas as Ofertas';
       const service = this.pageData.services.find(s => s.slug === slug);
       return service ? service.name : '...';
     }
   },
   watch: {
-    '$route.params.slug': {
+    '$route': {
       immediate: true,
       handler() {
         this.fetchOffers();
@@ -82,8 +78,9 @@ export default {
     async fetchOffers() {
       this.loading = true;
       const slug = this.$route.params.slug || 'todos';
-      const url = `${this.backendUrl}/api/v1/offers/servico/${slug}/`;
-
+      const queryParams = new URLSearchParams(this.$route.query).toString();
+      let url = `${this.backendUrl}/api/v1/offers/servico/${slug}/`;
+      if (queryParams) url += `?${queryParams}`;
       try {
         const response = await axios.get(url);
         this.offers = response.data;
@@ -99,27 +96,25 @@ export default {
 </script>
 
 <style scoped>
-/* O seu CSS que já está a funcionar perfeitamente */
 .page-header {
-  padding: 50px 0;
+  padding: 40px 0;
   background-color: #003366;
   color: #fff;
   text-align: center;
 }
-.page-header h1 { font-size: 2.8rem; }
+.page-header h1 { font-size: 2.2rem; }
 
+/* FILTRO NO FLUXO NORMAL DA PÁGINA */
 .filter-bar {
   background-color: #fff;
   border-bottom: 1px solid #e6e6e6;
-  position: relative;
-  top: auto;
+  position: relative; /* mantém no fluxo, não fixa na tela */
   z-index: 1;
 }
-
 .filter-container {
   display: flex;
-  gap: 10px;
-  padding: 12px 20px;
+  gap: 8px;
+  padding: 8px 16px;
   align-items: center;
   overflow-x: auto;
   -ms-overflow-style: none;
@@ -130,25 +125,28 @@ export default {
 .filter-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   white-space: nowrap;
-  padding: 8px 16px;
+  padding: 6px 14px;
   border-radius: 50px;
   background: #f5f7fa;
   color: #333;
   text-decoration: none;
   border: 1px solid #e6e6e6;
+  font-size: 0.9rem;
   font-weight: 500;
   transition: all .2s ease;
 }
-.filter-btn:hover { transform: translateY(-2px); background: #eef2f7; }
+.filter-btn:hover { transform: translateY(-1px); background: #eef2f7; }
 .filter-btn.active {
   background: var(--primary-color);
   color: #fff;
   border-color: var(--primary-color);
 }
 
-.page-content { padding: 50px 20px; }
+.page-content {
+  padding: 50px 20px; /* não precisa compensar altura fixa */
+}
 .loading-spinner, .no-offers-message { text-align: center; padding: 40px 0; color: #666; }
 
 .offer-grid {
