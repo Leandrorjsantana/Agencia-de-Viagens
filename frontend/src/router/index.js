@@ -6,8 +6,7 @@ import ClientAreaLayout from '../layouts/ClientAreaLayout.vue'
 import OfferDetailView from '../views/OfferDetailView.vue'
 import ServiceOffersView from '../views/ServiceOffersView.vue'
 import ContactView from '../views/ContactView.vue'
-
-const PlaceholderPage = { template: '<div class="container" style="padding: 50px 20px;"><h2>Página em Construção</h2></div>' };
+import PageView from '../views/PageView.vue'
 
 const requireAuth = (to, from, next) => {
   if (!localStorage.getItem('accessToken')) {
@@ -18,6 +17,7 @@ const requireAuth = (to, from, next) => {
 };
 
 const routes = [
+  // Rotas Principais e Específicas (têm prioridade)
   { path: '/', name: 'home', component: HomeView },
   { path: '/register', name: 'register', component: RegisterView },
   { path: '/login', name: 'login', component: LoginView },
@@ -25,19 +25,24 @@ const routes = [
   { path: '/ofertas/servico/:slug', name: 'service-offers', component: ServiceOffersView },
   { path: '/contato', name: 'contact', component: ContactView },
   
-  // Rotas placeholder para as outras páginas
-  { path: '/experiencias', name: 'experiencias', component: PlaceholderPage },
-  // ... (outras rotas placeholder)
-
+  // --- CORREÇÃO AQUI: A rota da Área do Cliente foi movida para cima ---
+  // para que seja encontrada antes da rota genérica.
   {
     path: '/area-cliente',
     component: ClientAreaLayout,
     beforeEnter: requireAuth,
     meta: { isClientArea: true },
     children: [
-      // ... (rotas da área do cliente)
+      { path: '', redirect: '/area-cliente/dashboard' },
+      { path: 'dashboard', name: 'dashboard', component: () => import('../views/client_area/DashboardView.vue') },
+      { path: 'perfil', name: 'profile', component: () => import('../views/client_area/ProfileView.vue') },
+      { path: 'reservas', name: 'reservations', component: () => import('../views/client_area/ReservationsView.vue') },
     ]
-  }
+  },
+
+  // --- ROTA GENÉRICA (FICA NO FINAL) ---
+  // Esta rota só será usada se nenhuma das rotas acima corresponder.
+  { path: '/:slug', name: 'page', component: PageView },
 ];
 
 const router = createRouter({

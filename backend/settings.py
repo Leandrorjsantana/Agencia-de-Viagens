@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'ckeditor',
+    'ckeditor_uploader',
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
     'site_settings.apps.SiteSettingsConfig',
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'reservations.apps.ReservationsConfig',
     'subscribers.apps.SubscribersConfig',
     'contacts.apps.ContactsConfig',
+    'company_info.apps.CompanyInfoConfig',
 ]
 
 MIDDLEWARE = [
@@ -124,6 +127,8 @@ REST_AUTH = {
     'REGISTER_SERIALIZER': 'accounts.serializers.RegisterSerializer',
 }
 
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
 JAZZMIN_SETTINGS = {
     "site_title": "Painel da Agência",
     "site_header": "Agência de Viagens",
@@ -139,20 +144,23 @@ JAZZMIN_SETTINGS = {
     "custom_css": "core/css/admin_custom.css",
     "custom_js": "core/js/admin_custom.js",
     "order_with_respect_to": [
-        "site_settings", "banners", "menus",
+        "site_settings", "banners", "menus", "company_info",
         "services", "offers", "reservations",
-        "subscribers", "blog",
+        "contacts", "subscribers", "blog", "pages",
         "auth", "accounts",
     ],
     "apps": {
         "site_settings": {"name": "Configurações do Site", "icon": "fa fa-cog"},
         "banners": {"name": "Gestão da Página Inicial", "icon": "fa fa-images"},
         "menus": {"name": "Gestão de Menus", "icon": "fa fa-bars"},
+        "company_info": {"name": "Gestão de Conteúdo", "icon": "fa fa-users"},
+        "pages": {"name": "Gestão de Conteúdo", "icon": "fa fa-file-alt"},
+        "blog": {"name": "Gestão de Conteúdo", "icon": "fa fa-rss"},
         "services": {"name": "Catálogo", "icon": "fa fa-concierge-bell"},
         "offers": {"name": "Catálogo", "icon": "fa fa-tag"},
         "reservations": {"name": "Vendas", "icon": "fa fa-file-invoice-dollar"},
+        "contacts": {"name": "Vendas", "icon": "fa fa-headset"},
         "subscribers": {"name": "Marketing", "icon": "fa fa-envelope"},
-        "blog": {"name": "Marketing", "icon": "fa fa-rss"},
         "accounts": {"name": "Administração", "icon": "fa fa-users-cog"},
         "auth": {"name": "Administração", "icon": "fa fa-users"},
     },
@@ -161,10 +169,13 @@ JAZZMIN_SETTINGS = {
         "auth.Group": "fa fa-users",
         "accounts.profile": "fa fa-id-card",
         "banners.banner": "fa fa-image",
+        "company_info.teammember": "fa fa-user-tie",
+        "contacts.contactmessage": "fa fa-headset",
         "menus.topbarlink": "fa fa-arrow-up",
         "menus.menuitem": "fa fa-bars",
         "menus.socialmedialink": "fa fa-share-alt",
         "offers.offer": "fa fa-tags",
+        "pages.page": "fa fa-file-lines",
         "reservations.reservation": "fa fa-file-signature",
         "reservations.reservationdocument": "fa fa-file-alt",
         "services.service": "fa fa-concierge-bell",

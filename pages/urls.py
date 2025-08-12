@@ -1,10 +1,8 @@
 # pages/urls.py
 
 from django.urls import path
-from .views import PageDetailView
+from .views import PageDetailView  # <-- Esta linha agora vai funcionar
 
 urlpatterns = [
-    # O endereço será: /api/v1/pages/<slug-da-pagina>/
-    # ex: /api/v1/pages/quem-somos/
-    path('<slug:slug>/', PageDetailView.as_view(), name='page_detail'),
+    path('<slug:slug>/', PageDetailView.as_view(), name='page-detail'),
 ]

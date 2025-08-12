@@ -7,6 +7,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # --- CORREÇÃO AQUI: Adicionando a rota para o upload de imagens do editor ---
     path('ckeditor/', include('ckeditor_uploader.urls')),
 
     # --- NOSSAS ROTAS DE API V1 ---
@@ -17,9 +19,9 @@ urlpatterns = [
     path('api/v1/reservations/', include('reservations.urls')),
     path('api/v1/offers/', include('offers.urls')),
     path('api/v1/subscribers/', include('subscribers.urls')),
-    
-    # --- CORREÇÃO ADICIONADA AQUI: Conectando as rotas do nosso app 'contacts' ---
     path('api/v1/contacts/', include('contacts.urls')),
+    path('api/v1/pages/', include('pages.urls')),
+    #path('api/v1/company-info/', include('company_info.urls')),
 ]
 
 if settings.DEBUG:
