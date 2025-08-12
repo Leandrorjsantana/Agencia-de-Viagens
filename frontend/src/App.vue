@@ -1,5 +1,5 @@
 <template>
-  <div id="app-container">
+  <div id="app">
     <component :is="'style'" v-if="pageData?.site_configuration">
       :root {
         --primary-color: {{ pageData.site_configuration.primary_color }};
@@ -16,7 +16,6 @@
       }
     </component>
 
-    <!-- O cabeçalho SÓ aparece se a rota NÃO for da área do cliente -->
     <header class="main-header" v-if="!isClientArea && pageData">
       <div class="header-top">
         <div class="container">
@@ -59,7 +58,6 @@
       </div>
     </main>
 
-    <!-- O rodapé SÓ aparece se a rota NÃO for da área do cliente -->
     <footer class="main-footer" v-if="!isClientArea && pageData?.site_configuration">
       <div class="container">
         <div class="social-icons" v-if="pageData.social_media_links && pageData.social_media_links.length">
@@ -123,7 +121,7 @@ export default {
 
 <style>
 body { font-family: var(--main-font, sans-serif); margin: 0; background-color: #f4f5f7; }
-#app-container { min-height: 100vh; display: flex; flex-direction: column; }
+#app { display: flex; flex-direction: column; min-height: 100vh; }
 .body-wrapper { flex-grow: 1; display: flex; flex-direction: column; }
 .body-wrapper > * { flex-grow: 1; }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -140,7 +138,21 @@ body { font-family: var(--main-font, sans-serif); margin: 0; background-color: #
 .main-navigation a:hover, .main-navigation a.router-link-exact-active { color: var(--primary-color); }
 .user-nav { flex-shrink: 0; }
 .login-button { background-color: var(--primary-color); color: #fff !important; padding: 10px 15px; border-radius: 5px; font-weight: bold; text-decoration: none; }
-.client-area-button { background-color: #198754; color: #fff !important; padding: 10px 15px; border-radius: 5px; font-weight: bold; text-decoration: none; }
+/* --- ESTILO APRIMORADO PARA O BOTÃO "MINHA CONTA" --- */
+.client-area-button {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: #fff !important;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  transition: all 0.3s ease;
+}
+.client-area-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 20px rgba(40, 167, 69, 0.5);
+}
 .main-footer { background-color: var(--footer-bg-color); color: var(--footer-text-color); padding: 40px 0; text-align: center; }
 .social-icons { margin-bottom: 20px; }
 .social-icons a { color: #fff; font-size: 1.5rem; margin: 0 10px; transition: color 0.3s; }

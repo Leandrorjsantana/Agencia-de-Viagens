@@ -88,7 +88,7 @@ export default {
 </script>
 
 <style scoped>
-/* garantir box-sizing para evitar overflow no botão */
+/* O seu CSS original, com o ajuste fino para o alinhamento */
 * { box-sizing: border-box; }
 
 .offer-card {
@@ -127,7 +127,7 @@ export default {
   padding-top: 12px;
   border-top: 1px solid #f0f0f0;
   display: flex;
-  /* Alinha os itens na vertical */
+  /* Organiza os itens em coluna */
   flex-direction: column;
   /* Alinha tudo à direita */
   align-items: flex-end;
