@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'banners.apps.BannersConfig',
     'reservations.apps.ReservationsConfig',
     'subscribers.apps.SubscribersConfig',
+    'contacts.apps.ContactsConfig',
 ]
 
 MIDDLEWARE = [

@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 
     # --- NOSSAS ROTAS DE API V1 ---
     path('api/v1/', include('core.urls')),
@@ -17,7 +18,8 @@ urlpatterns = [
     path('api/v1/offers/', include('offers.urls')),
     path('api/v1/subscribers/', include('subscribers.urls')),
     
-    # A linha 'path('api/v1/leads/', include('leads.urls')),' foi REMOVIDA.
+    # --- CORREÇÃO ADICIONADA AQUI: Conectando as rotas do nosso app 'contacts' ---
+    path('api/v1/contacts/', include('contacts.urls')),
 ]
 
 if settings.DEBUG:

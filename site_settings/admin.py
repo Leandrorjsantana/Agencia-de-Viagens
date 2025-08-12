@@ -10,9 +10,19 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             'fields': ('site_name', 'logo', 'logo_height', 'favicon')
         }),
         ('Informações de Contato Públicas', {
-            'fields': ('public_email', 'public_whatsapp')
+            'fields': (
+                'public_email', 
+                'public_whatsapp', 
+                'address_street',
+                'address_neighborhood',
+                ('address_city', 'address_state'),
+                'address_cep',
+                'opening_hours'
+            )
         }),
-        # --- SECÇÃO RESTAURADA AQUI ---
+        ('Página de Contato', {
+            'fields': ('contact_page_title', 'contact_page_subtitle', 'google_maps_embed_url', 'contact_form_subjects')
+        }),
         ('Configurações de Códigos', {
             'fields': ('offer_code_prefix',)
         }),
@@ -20,7 +30,7 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             'fields': ('main_font', 'primary_color')
         }),
         ('Seção de Busca (Hero)', {
-            'fields': ('hero_background_color', 'hero_background_image')
+            'fields': ('hero_background_color', 'hero_background_image', 'booking_form_bg_color')
         }),
         ('Seção de Newsletter', {
             'fields': ('newsletter_headline', 'newsletter_subheadline', 'newsletter_button_text', 'newsletter_background_color', 'newsletter_background_image')
@@ -30,7 +40,6 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
         }),
         ('Cores Detalhadas', {
             'classes': ('collapse',),
-            # --- LAYOUT DAS CORES CORRIGIDO (UM POR LINHA) ---
             'fields': (
                 'top_bar_bg_color', 
                 'top_bar_text_color',

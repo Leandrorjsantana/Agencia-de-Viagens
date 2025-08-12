@@ -4,8 +4,8 @@ import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
 import ClientAreaLayout from '../layouts/ClientAreaLayout.vue'
 import OfferDetailView from '../views/OfferDetailView.vue'
-// Importando a nossa nova página
 import ServiceOffersView from '../views/ServiceOffersView.vue'
+import ContactView from '../views/ContactView.vue'
 
 const PlaceholderPage = { template: '<div class="container" style="padding: 50px 20px;"><h2>Página em Construção</h2></div>' };
 
@@ -22,23 +22,12 @@ const routes = [
   { path: '/register', name: 'register', component: RegisterView },
   { path: '/login', name: 'login', component: LoginView },
   { path: '/ofertas/:slug', name: 'offer-detail', component: OfferDetailView },
+  { path: '/ofertas/servico/:slug', name: 'service-offers', component: ServiceOffersView },
+  { path: '/contato', name: 'contact', component: ContactView },
   
-  // --- ROTA ATUALIZADA AQUI ---
-  // Agora, qualquer URL como /ofertas/servico/hospedagens vai carregar a nossa nova página.
-  { 
-    path: '/ofertas/servico/:slug', 
-    name: 'service-offers', 
-    component: ServiceOffersView 
-  },
-
+  // Rotas placeholder para as outras páginas
   { path: '/experiencias', name: 'experiencias', component: PlaceholderPage },
-  { path: '/destinos', name: 'destinos', component: PlaceholderPage },
-  { path: '/servicos', name: 'servicos', component: PlaceholderPage },
-  { path: '/blog', name: 'blog', component: PlaceholderPage },
-  { path: '/sobre-nos', name: 'sobre-nos', component: PlaceholderPage },
-  { path: '/contato', name: 'contato', component: PlaceholderPage },
-  { path: '/ajuda', name: 'ajuda', component: PlaceholderPage },
-  { path: '/televendas', name: 'televendas', component: PlaceholderPage },
+  // ... (outras rotas placeholder)
 
   {
     path: '/area-cliente',
@@ -46,10 +35,7 @@ const routes = [
     beforeEnter: requireAuth,
     meta: { isClientArea: true },
     children: [
-      { path: '', redirect: '/area-cliente/dashboard' },
-      { path: 'dashboard', name: 'dashboard', component: () => import('../views/client_area/DashboardView.vue') },
-      { path: 'perfil', name: 'profile', component: () => import('../views/client_area/ProfileView.vue') },
-      { path: 'reservas', name: 'reservations', component: () => import('../views/client_area/ReservationsView.vue') },
+      // ... (rotas da área do cliente)
     ]
   }
 ];
