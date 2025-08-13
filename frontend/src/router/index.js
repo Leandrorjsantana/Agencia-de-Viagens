@@ -7,6 +7,7 @@ import OfferDetailView from '../views/OfferDetailView.vue'
 import ServiceOffersView from '../views/ServiceOffersView.vue'
 import ContactView from '../views/ContactView.vue'
 import PageView from '../views/PageView.vue'
+import AboutUsView from '../views/AboutUsView.vue' // Import adicionado
 
 const requireAuth = (to, from, next) => {
   if (!localStorage.getItem('accessToken')) {
@@ -24,6 +25,7 @@ const routes = [
   { path: '/ofertas/:slug', name: 'offer-detail', component: OfferDetailView },
   { path: '/ofertas/servico/:slug', name: 'service-offers', component: ServiceOffersView },
   { path: '/contato', name: 'contact', component: ContactView },
+  { path: '/quem-somos', name: 'about-us', component: AboutUsView }, // Rota adicionada
   
   // --- CORREÇÃO AQUI: A rota da Área do Cliente foi movida para cima ---
   // para que seja encontrada antes da rota genérica.

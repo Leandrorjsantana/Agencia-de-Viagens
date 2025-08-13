@@ -57,9 +57,7 @@
                 <input type="email" id="contact-email" v-model="contactForm.email" required>
               </div>
               <div class="form-field">
-                <!-- CORREÇÃO: O rótulo agora não diz mais "Opcional" -->
                 <label for="contact-phone">Telefone</label>
-                <!-- CORREÇÃO: O campo agora é 'required' -->
                 <input type="tel" id="contact-phone" v-model="contactForm.phone" required>
               </div>
             </div>
@@ -161,89 +159,109 @@ export default {
 
 <style scoped>
 .page-header {
-  padding: 50px 0;
+  padding: 40px 0;
   background-color: #003366;
   color: #fff;
   text-align: center;
 }
-.page-header h1 { font-size: 2.8rem; }
+.page-header h1 {
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+}
 
 .page-content {
-  padding: 60px 20px;
+  padding: 40px 20px;
 }
+
 .contact-grid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 50px;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
 }
-.info-block {
-  margin-bottom: 30px;
-}
-.info-block h3 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
+
+.info-block h3, .contact-form-wrapper h3 {
+  font-size: 1.3rem;
+  margin-bottom: 18px;
   border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 8px;
 }
+
 .info-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 .info-item i {
-  color: var(--primary-color);
-  width: 20px;
+  width: 18px;
 }
-.info-item pre {
-  font-family: inherit;
-  margin: 0;
-  white-space: pre-wrap;
-}
-.map-block iframe {
-  border-radius: 8px;
-}
+
 .contact-form-wrapper {
   background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  padding: 20px 25px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 }
-.contact-form-wrapper h3 {
-  font-size: 1.5rem;
-  margin-top: 0;
-  margin-bottom: 25px;
+
+.form-field {
+  margin-bottom: 15px;
 }
-.form-field { margin-bottom: 20px; }
-.form-field label { display: block; font-weight: 500; margin-bottom: 8px; }
-.form-field input, .form-field textarea, .form-field select {
-  width: 100%;
-  padding: 12px;
+.form-field label {
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.form-field input, 
+.form-field textarea, 
+.form-field select {
+  padding: 10px;
+  font-size: 0.95rem;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 1rem;
   font-family: inherit;
   box-sizing: border-box;
-}
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-.submit-button {
   width: 100%;
-  padding: 15px;
-  font-size: 1.1rem;
+}
+
+.form-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  display: grid;
+}
+
+.submit-button {
+  padding: 12px;
+  font-size: 1rem;
   font-weight: bold;
   color: #fff;
   background-color: var(--primary-color);
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   transition: opacity 0.3s;
+  width: 100%;
 }
-.submit-button:disabled { background-color: #ccc; }
-.error-message { background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; text-align: center; margin-bottom: 20px; }
-.success-message { background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; text-align: center; margin-bottom: 20px; }
+
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message, .success-message {
+  font-size: 0.95rem;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+}
 </style>

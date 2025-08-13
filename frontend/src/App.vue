@@ -68,13 +68,21 @@
         <p>{{ pageData.site_configuration.footer_text }}</p>
       </div>
     </footer>
+
+    <!-- Inserção do botão "Back to Top" -->
+    <BackToTop />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import BackToTop from './components/BackToTop.vue'; // Importa o componente BackToTop
+
 export default {
   name: 'App',
+  components: {
+    BackToTop,  // Registra o componente
+  },
   data() {
     return {
       pageData: null,
@@ -120,6 +128,7 @@ export default {
 </script>
 
 <style>
+/* ... SEU CSS ATUAL AQUI ... */
 body { font-family: var(--main-font, sans-serif); margin: 0; background-color: #f4f5f7; }
 #app { display: flex; flex-direction: column; min-height: 100vh; }
 .body-wrapper { flex-grow: 1; display: flex; flex-direction: column; }

@@ -187,44 +187,255 @@ export default {
 </script>
 
 <style scoped>
-.page-header { margin-bottom: 40px; }
-.page-header h1 { font-size: 2.2rem; }
-.reservations-list { display: grid; gap: 30px; }
-.reservation-card { background: #fff; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.07); overflow: hidden; }
-.card-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background-color: #f8f9fa; border-bottom: 1px solid #e9ecef; }
-.header-info h3 { margin: 0; font-size: 1.3rem; }
-.header-info span { font-size: 0.9rem; color: #6c757d; }
-.status-badge { padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; color: #fff; }
-.status-awaiting_contact { background-color: #0dcaf0; color: #000; }
-.status-contacted { background-color: #6c757d; }
-.status-pending_payment { background-color: #ffc107; color: #333; }
-.status-confirmed { background-color: #198754; }
-.status-canceled { background-color: #dc3545; }
-.status-completed { background-color: #6c757d; }
-.card-body { display: flex; gap: 20px; padding: 20px; }
-.offer-image img, .image-placeholder { width: 150px; height: 100px; object-fit: cover; border-radius: 8px; background-color: #eee; }
-.reservation-details p { margin: 0 0 10px 0; }
-.card-footer { padding: 20px; background-color: #f8f9fa; border-top: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; }
-.documents-section h4 { margin: 0 0 10px 0; }
-.documents-section ul { list-style: none; padding: 0; margin: 0; }
-.documents-section li a { color: var(--primary-color); text-decoration: none; font-weight: 500; }
-.documents-section li a i { margin-right: 8px; }
-.uploader-tag { font-size: 0.8rem; color: #777; margin-left: 8px; }
-.upload-button { background-color: var(--primary-color); color: #fff; border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-.no-reservations { text-align: center; padding: 50px; background: #fff; border-radius: 12px; }
-.no-reservations i { font-size: 3rem; color: #ccc; }
-.explore-button { display: inline-block; margin-top: 20px; padding: 12px 25px; background-color: var(--primary-color); color: #fff; border-radius: 50px; text-decoration: none; font-weight: bold; }
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-.modal-content { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-.modal-header h2 { margin: 0; }
-.close-button { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
-.modal-form .form-field { margin-bottom: 20px; }
-.modal-form label { display: block; margin-bottom: 8px; font-weight: 500; }
-.modal-form input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; }
-.modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
-.cancel-button, .submit-button { padding: 10px 20px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
-.cancel-button { background-color: #f0f0f0; }
-.submit-button { background-color: var(--primary-color); color: #fff; }
-.submit-button:disabled { background-color: #ccc; }
+.page-header { 
+  margin-bottom: 40px; 
+}
+.page-header h1 { 
+  font-size: 2.2rem; 
+}
+
+/* Loading pulsante */
+.loading-spinner p {
+  font-weight: 600;
+  color: var(--primary-color);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.reservations-list { 
+  display: grid; 
+  gap: 30px; 
+}
+.reservation-card { 
+  background: #fff; 
+  border-radius: 12px; 
+  box-shadow: 0 5px 20px rgba(0,0,0,0.07); 
+  overflow: hidden; 
+}
+.card-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  padding: 20px; 
+  background-color: #f8f9fa; 
+  border-bottom: 1px solid #e9ecef; 
+}
+.header-info h3 { 
+  margin: 0; 
+  font-size: 1.3rem; 
+}
+.header-info span { 
+  font-size: 0.9rem; 
+  color: #6c757d; 
+}
+.status-badge { 
+  padding: 5px 12px; 
+  border-radius: 20px; 
+  font-weight: bold; 
+  font-size: 0.8rem; 
+  color: #fff; 
+}
+.status-awaiting_contact { 
+  background-color: #0dcaf0; 
+  color: #000; 
+}
+.status-contacted { 
+  background-color: #6c757d; 
+}
+.status-pending_payment { 
+  background-color: #ffc107; 
+  color: #333; 
+}
+.status-confirmed { 
+  background-color: #198754; 
+}
+.status-canceled { 
+  background-color: #dc3545; 
+}
+.status-completed { 
+  background-color: #6c757d; 
+}
+.card-body { 
+  display: flex; 
+  gap: 20px; 
+  padding: 20px; 
+}
+.offer-image img, .image-placeholder { 
+  width: 150px; 
+  height: 100px; 
+  object-fit: cover; 
+  border-radius: 8px; 
+  background-color: #eee; 
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+.offer-image img:hover {
+  transform: scale(1.05);
+}
+.reservation-details p { 
+  margin: 0 0 10px 0; 
+}
+.card-footer { 
+  padding: 20px; 
+  background-color: #f8f9fa; 
+  border-top: 1px solid #e9ecef; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+}
+.documents-section h4 { 
+  margin: 0 0 10px 0; 
+}
+.documents-section ul { 
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+}
+.documents-section li a { 
+  color: var(--primary-color); 
+  text-decoration: none; 
+  font-weight: 500; 
+  cursor: pointer;
+}
+.documents-section li a i { 
+  margin-right: 8px; 
+}
+.uploader-tag { 
+  font-size: 0.75rem; 
+  color: #999; 
+  margin-left: 10px; 
+  font-style: italic; 
+}
+.upload-button { 
+  background-color: var(--primary-color); 
+  color: #fff; 
+  border: none; 
+  padding: 10px 15px; 
+  border-radius: 5px; 
+  font-weight: bold; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.upload-button:hover,
+.upload-button:focus {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.no-reservations { 
+  text-align: center; 
+  padding: 50px; 
+  background: #fff; 
+  border-radius: 12px; 
+}
+.no-reservations i { 
+  font-size: 3rem; 
+  color: #ccc; 
+}
+.explore-button { 
+  display: inline-block; 
+  margin-top: 20px; 
+  padding: 12px 25px; 
+  background-color: var(--primary-color); 
+  color: #fff; 
+  border-radius: 50px; 
+  text-decoration: none; 
+  font-weight: bold; 
+}
+
+.modal-overlay { 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background-color: rgba(0,0,0,0.6); 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  z-index: 1000; 
+}
+.modal-content { 
+  background: #fff; 
+  padding: 30px; 
+  border-radius: 12px; 
+  width: 100%; 
+  max-width: 500px; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+}
+.modal-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  border-bottom: 1px solid #eee; 
+  padding-bottom: 15px; 
+  margin-bottom: 20px; 
+}
+.modal-header h2 { 
+  margin: 0; 
+}
+.close-button { 
+  background: none; 
+  border: none; 
+  font-size: 1.5rem; 
+  cursor: pointer; 
+}
+.modal-form .form-field { 
+  margin-bottom: 20px; 
+}
+.modal-form label { 
+  display: block; 
+  margin-bottom: 8px; 
+  font-weight: 500; 
+}
+.modal-form input { 
+  width: 100%; 
+  padding: 12px; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+}
+.modal-actions { 
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 15px; 
+  margin-top: 30px; 
+}
+.cancel-button, .submit-button { 
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  border: none; 
+  font-weight: bold; 
+  cursor: pointer; 
+}
+.cancel-button { 
+  background-color: #f0f0f0; 
+}
+.submit-button { 
+  background-color: var(--primary-color); 
+  color: #fff; 
+}
+.submit-button:disabled { 
+  background-color: #ccc; 
+}
+
+/* Responsividade básica para telas menores */
+@media (max-width: 600px) {
+  .card-body {
+    flex-direction: column;
+    align-items: center;
+  }
+  .offer-image img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+  }
+}
+
 </style>

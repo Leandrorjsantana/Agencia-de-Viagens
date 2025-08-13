@@ -92,13 +92,152 @@ export default {
 </script>
 
 <style scoped>
-.auth-page { padding: 60px 20px; background-color: #f4f5f7; }
-.auth-container { max-width: 600px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
-.auth-header { text-align: center; margin-bottom: 30px; }
-.form-field { margin-bottom: 20px; }
-.form-field label { display: block; font-weight: 500; margin-bottom: 8px; }
-.form-field input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; }
-.submit-button { width: 100%; padding: 15px; font-size: 1.1rem; font-weight: bold; color: #fff; background-color: var(--primary-color); border: none; border-radius: 8px; cursor: pointer; transition: opacity 0.3s; }
-.error-message { background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; text-align: center; margin-bottom: 20px; }
-.auth-switch { text-align: center; margin-top: 25px; }
+.auth-page {
+  padding: 60px 20px;
+  min-height: 100vh;
+  background-color: #f9fafb; /* fundo brando e claro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-container {
+  max-width: 400px;
+  width: 100%;
+  background: #fff;
+  padding: 40px 35px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); /* sombra suave */
+  transition: transform 0.3s ease;
+}
+
+.auth-container:hover {
+  transform: translateY(-5px);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-header h2 {
+  font-weight: 700;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.auth-header p {
+  color: #666;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
+.form-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #444;
+  font-size: 1rem;
+}
+
+.form-field input {
+  width: 100%;
+  padding: 14px 15px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+  box-sizing: border-box;
+  height: 48px; /* altura igual ao botão */
+}
+
+.form-field input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 8px var(--primary-color);
+}
+
+.submit-button {
+  width: 100%;
+  padding: 0;
+  height: 48px; /* altura alinhada aos inputs */
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.submit-button:hover {
+  background-color: #5a67d8;
+}
+
+.error-message {
+  background-color: #fdecea;
+  color: #b92c28;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+
+.error-message p {
+  margin: 0;
+}
+
+.error-message::before {
+  content: "⚠️";
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.auth-switch a {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+  color: #5a67d8;
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 30px 25px;
+    border-radius: 12px;
+  }
+  .auth-header h2 {
+    font-size: 1.75rem;
+  }
+  .submit-button {
+    font-size: 1rem;
+    height: 44px;
+  }
+  .form-field input {
+    height: 44px;
+  }
+}
 </style>

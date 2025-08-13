@@ -124,11 +124,11 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos para uma página "Quem Somos" moderna e inspiradora */
+/* Estilos para uma página "Quem Somos" mais compacta e elegante */
 .page-header {
   position: relative;
-  height: 50vh;
-  min-height: 350px;
+  height: 40vh;
+  min-height: 300px;
   background-size: cover;
   background-position: center;
   color: #fff;
@@ -147,33 +147,139 @@ export default {
   position: relative;
   z-index: 2;
 }
-.header-content h1 { font-size: 3rem; font-weight: 700; }
-.header-content p { font-size: 1.2rem; }
+.header-content h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.header-content p {
+  font-size: 1.1rem;
+  margin: 0;
+}
 
-.content-section { padding: 60px 0; }
-.history-content { max-width: 800px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem; }
-.history-content ::v-deep(h2) { text-align: center; margin-bottom: 30px; }
+.content-section {
+  padding: 40px 0;
+}
+.history-content {
+  max-width: 720px;
+  margin: 0 auto;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+.history-content ::v-deep(h2) {
+  text-align: center;
+  margin-bottom: 25px;
+}
 
-.values-section { background-color: #f8f9fa; padding: 60px 0; }
-.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-.value-card { background: #fff; padding: 30px; border-radius: 8px; text-align: center; }
-.value-card i { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px; }
-.value-card h3 { margin-bottom: 10px; }
-.value-card ul { list-style: none; padding: 0; }
+.values-section {
+  background-color: #f8f9fa;
+  padding: 40px 0;
+}
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+.value-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+}
+.value-card i {
+  font-size: 2.2rem;
+  color: var(--primary-color);
+  margin-bottom: 12px;
+}
+.value-card h3 {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.value-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
 
-.team-section { padding: 60px 0; }
-.section-title { text-align: center; font-size: 2.2rem; margin-bottom: 40px; }
-.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
-.team-card { text-align: center; }
-.team-card img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
-.team-card h4 { margin-bottom: 5px; }
-.team-card .role { color: #777; }
-.team-card .bio { font-style: italic; }
+.team-section {
+  padding: 40px 0;
+}
+.section-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 25px;
+}
+.team-card {
+  text-align: center;
+}
+.team-card img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+}
+.team-card h4 {
+  margin-bottom: 4px;
+  font-size: 1.1rem;
+}
+.team-card .role {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+.team-card .bio {
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0;
+}
 
-.stats-section { background-color: var(--primary-color); color: #fff; padding: 50px 0; }
-.stats-section .container { display: flex; justify-content: space-around; text-align: center; }
-.stat-item strong { display: block; font-size: 2.5rem; font-weight: 700; }
+.stats-section {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 40px 0;
+}
+.stats-section .container {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+.stat-item strong {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+}
+.stat-item span {
+  display: block;
+  font-size: 1rem;
+  margin-top: 5px;
+}
 
-.cta-section { padding: 60px 0; text-align: center; }
-.cta-button { display: inline-block; padding: 15px 30px; background-color: var(--primary-color); color: #fff; border-radius: 50px; text-decoration: none; font-weight: bold; }
+.cta-section {
+  padding: 40px 0;
+  text-align: center;
+}
+.cta-button {
+  display: inline-block;
+  padding: 14px 28px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+.cta-button:hover {
+  background-color: #004a99;
+}
 </style>

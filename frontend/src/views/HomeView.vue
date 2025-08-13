@@ -4,7 +4,7 @@
       <Carousel :autoplay="getAutoplaySpeed(pageData.site_configuration.banner_autoplay_speed)" :wrap-around="true">
         <Slide v-for="banner in pageData.banners" :key="banner.id">
           <a :href="banner.link_url || '#'" target="_blank" rel="noopener noreferrer" class="carousel__item">
-            <img :src="`${backendUrl}${banner.image}`" :alt="banner.title">
+            <img class="banner-img" :src="`${backendUrl}${banner.image}`" :alt="banner.title">
           </a>
         </Slide>
         <template #addons>
@@ -25,21 +25,71 @@
 
     <main class="hero-section" :style="heroStyle">
       <div class="container">
-        <div class="booking-form-container">
-          <form @submit.prevent="handleSearchSubmit" v-if="pageData.services && pageData.services.length > 0">
+        <div class="booking-form-container" :style="{ height: formContainerHeight }">
+          <form @submit.prevent="handleSearchSubmit" v-if="pageData.services && pageData.services.length > 0" ref="formContent">
             <div v-for="service in pageData.services" :key="`form-${service.slug}`">
               <transition name="fade">
                 <div v-if="activeTab === service.slug" class="form-panel">
                   <div v-if="activeTab === 'hospedagens'" class="dynamic-form-grid">
-                    <div class="form-group destination-group"><label>Cidade, hotel ou destino</label><input type="text" placeholder="Ex: Rio de Janeiro" v-model="formData.destination"></div>
-                    <div class="form-group date-group"><label>Entrada</label><input type="date" v-model="formData.checkin"></div>
-                    <div class="form-group date-group"><label>Saída</label><input type="date" v-model="formData.checkout"></div>
-                    <div class="form-group guests-group"><label>Quartos e Hóspedes</label><button type="button" class="custom-input-btn" @click="isRoomSelectorOpen = !isRoomSelectorOpen">{{ roomsDisplayText }}</button><div v-if="isRoomSelectorOpen" class="room-selector-popup"><div v-for="(room, index) in rooms" :key="index" class="room-item"><div class="room-header"><strong>Quarto {{ index + 1 }}</strong><button type="button" class="remove-room-btn" v-if="rooms.length > 1" @click="removeRoom(index)">Remover</button></div><div class="guest-controls"><label>Adultos <span>+18 anos</span></label><div><button type="button" @click="room.adults > 1 ? room.adults-- : null" class="stepper-btn">-</button><span>{{ room.adults }}</span><button type="button" @click="room.adults++" class="stepper-btn">+</button></div></div><div class="guest-controls"><label>Crianças <span>0-17 anos</span></label><div><button type="button" @click="room.children > 0 ? room.children-- : null" class="stepper-btn">-</button><span>{{ room.children }}</span><button type="button" @click="room.children++" class="stepper-btn">+</button></div></div></div><div class="popup-actions"><button type="button" class="add-room-btn" @click="addRoom">Adicionar quarto</button><button type="button" class="apply-btn" @click="isRoomSelectorOpen = false">Aplicar</button></div></div></div>
-                    <div class="form-group button-group"><button type="submit" class="search-button" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button></div>
+                    <div class="form-group destination-group">
+                      <label>Cidade, hotel ou destino</label>
+                      <input type="text" placeholder="Ex: Rio de Janeiro" v-model="formData.destination">
+                    </div>
+                    <div class="form-group date-group">
+                      <label>Entrada</label>
+                      <input type="date" v-model="formData.checkin">
+                    </div>
+                    <div class="form-group date-group">
+                      <label>Saída</label>
+                      <input type="date" v-model="formData.checkout">
+                    </div>
+                    <div class="form-group guests-group">
+                      <label>Quartos e Hóspedes</label>
+                      <button type="button" class="custom-input-btn" @click="isRoomSelectorOpen = !isRoomSelectorOpen">
+                        {{ roomsDisplayText }}
+                      </button>
+                      <div v-if="isRoomSelectorOpen" class="room-selector-popup">
+                        <div v-for="(room, index) in rooms" :key="index" class="room-item">
+                          <div class="room-header">
+                            <strong>Quarto {{ index + 1 }}</strong>
+                            <button type="button" class="remove-room-btn" v-if="rooms.length > 1" @click="removeRoom(index)">Remover</button>
+                          </div>
+                          <div class="guest-controls">
+                            <label>Adultos <span>+18 anos</span></label>
+                            <div>
+                              <button type="button" @click="room.adults > 1 ? room.adults-- : null" class="stepper-btn">-</button>
+                              <span>{{ room.adults }}</span>
+                              <button type="button" @click="room.adults++" class="stepper-btn">+</button>
+                            </div>
+                          </div>
+                          <div class="guest-controls">
+                            <label>Crianças <span>0-17 anos</span></label>
+                            <div>
+                              <button type="button" @click="room.children > 0 ? room.children-- : null" class="stepper-btn">-</button>
+                              <span>{{ room.children }}</span>
+                              <button type="button" @click="room.children++" class="stepper-btn">+</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="popup-actions">
+                          <button type="button" class="add-room-btn" @click="addRoom">Adicionar quarto</button>
+                          <button type="button" class="apply-btn" @click="isRoomSelectorOpen = false">Aplicar</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group button-group">
+                      <button type="submit" class="search-button" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
                   </div>
+
                   <div v-else class="dynamic-form-grid">
-                    <div v-for="(field, index) in service.form_fields" :key="index" class="form-group"><label :for="`${service.slug}-${field.name}`">{{ field.label }}</label><input :type="field.type" :id="`${service.slug}-${field.name}`" :placeholder="field.placeholder || ''" v-model="formData[field.name]"></div>
-                    <div class="form-group button-group"><button type="submit" class="search-button" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button></div>
+                    <div v-for="(field, index) in service.form_fields" :key="index" class="form-group">
+                      <label :for="`${service.slug}-${field.name}`">{{ field.label }}</label>
+                      <input :type="field.type" :id="`${service.slug}-${field.name}`" :placeholder="field.placeholder || ''" v-model="formData[field.name]">
+                    </div>
+                    <div class="form-group button-group">
+                      <button type="submit" class="search-button" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
                   </div>
                 </div>
               </transition>
@@ -99,19 +149,22 @@ export default {
       rooms: [{ adults: 2, children: 0 }],
       newsletterEmail: '',
       carouselSettings: { itemsToShow: 1.2, snapAlign: 'start', breakpoints: { 600: { itemsToShow: 2.2 }, 900: { itemsToShow: 3.2 }, 1200: { itemsToShow: 4 } } },
-      formData: {}
+      formData: {},
+      formContainerHeight: 'auto',
     };
   },
   watch: {
     activeTab() {
       this.formData = {};
+      this.updateFormContainerHeight();
     },
     pageData: {
       immediate: true,
       handler(newData) {
-        if (newData?.services?.length > 0) {
+        if (newData?.services?.length > 0 && !this.activeTab) {
           this.activeTab = newData.services[0].slug;
         }
+        this.updateFormContainerHeight();
       }
     }
   },
@@ -140,12 +193,34 @@ export default {
     newsletterStyle() {
       const config = this.pageData?.site_configuration;
       if (config?.newsletter_background_image) {
-        return { backgroundImage: `url(${this.backendUrl}${config.newsletter_background_image})` };
+        return {
+          backgroundImage: `url(${this.backendUrl}${config.newsletter_background_image})`,
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+          backgroundColor: '#f4f5f7' 
+        };
       }
       return { backgroundColor: config?.newsletter_background_color || '#212529' };
     }
   },
   methods: {
+    // ===== AJUSTE PONTUAL E PRECISO =====
+    // Este método agora encontra o painel ativo e mede a altura *dele*,
+    // garantindo o tamanho correto e a transição suave.
+    updateFormContainerHeight() {
+      this.$nextTick(() => {
+        const formWrapper = this.$refs.formContent;
+        if (formWrapper) {
+          // Procura pelo painel que está de fato visível na tela
+          const activePanel = formWrapper.querySelector('.form-panel');
+          if (activePanel) {
+            // Mede a altura do painel ativo, e não do container geral
+            const formHeight = activePanel.scrollHeight;
+            this.formContainerHeight = `${formHeight}px`;
+          }
+        }
+      });
+    },
     addRoom() { this.rooms.push({ adults: 1, children: 0 }); },
     removeRoom(index) { this.rooms.splice(index, 1); },
     handleSearchSubmit() {
@@ -179,6 +254,11 @@ export default {
     getAutoplaySpeed(speed) {
       const speedMs = Number(speed);
       return !isNaN(speedMs) && speedMs > 0 ? speedMs : 0;
+    },
+    formatPrice(value) {
+      const number = parseFloat(value);
+      if (isNaN(number)) return value;
+      return new Intl.NumberFormat('pt-BR').format(number);
     }
   }
 };
@@ -187,29 +267,36 @@ export default {
 <style scoped>
 @import 'vue3-carousel/dist/carousel.css';
 
-/* --- CORREÇÃO DO BANNER --- */
-.banner-carousel-section .carousel__slide {
-  height: auto;
-}
+.banner-carousel-section .carousel__slide { height: auto; }
 .banner-carousel-section .carousel__item {
   line-height: 0;
-  max-height: 400px; /* Altura máxima para o slide, como sugerido */
-  overflow: hidden; /* Garante que nada ultrapasse a altura máxima */
+  max-height: 350px;
+  overflow: hidden;
+  background-color: #f0f2f5;
 }
-.banner-carousel-section .carousel__item img {
+.banner-carousel-section .carousel__item .banner-img {
   width: 100%;
-  height: 100%; /* Faz a imagem preencher o container do slide */
-  object-fit: cover;
+  height: 350px;
+  object-fit: contain;
   display: block;
 }
-/* --- FIM DA CORREÇÃO --- */
 
-.services-bar { padding: 15px 0; border-bottom: 1px solid #eee; background-color: #fff; }
+@media (max-width: 600px) { .banner-carousel-section .carousel__item { max-height: 220px; } .banner-carousel-section .carousel__item .banner-img { height: 220px; } }
+.services-bar { padding: 15px 0; border-bottom: 1px solid #eee; background-color: #fff; font-family: 'Poppins', sans-serif; }
 .services-bar .container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-.services-bar button { background: none; border: none; cursor: pointer; padding: 10px 15px; font-size: 1rem; display: flex; align-items: center; gap: 8px; transition: color 0.3s, border-color 0.3s; border-bottom: 3px solid transparent; }
+.services-bar button { background: none; border: none; cursor: pointer; padding: 10px 15px; font-size: 1rem; font-family: inherit; display: flex; align-items: center; gap: 8px; transition: color 0.3s, border-color 0.3s; border-bottom: 3px solid transparent; }
 .services-bar button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 .hero-section { background-size: cover; background-position: center; padding: 60px 0; }
-.booking-form-container { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+.booking-form-container {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  transition: height 0.35s ease-in-out;
+  overflow: hidden;
+}
+
 .dynamic-form-grid { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }
 .form-group { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 140px; }
 .form-group.destination-group { flex-grow: 2; min-width: 250px; }
@@ -238,8 +325,18 @@ export default {
 .view-all-btn { font-weight: bold; }
 .carousel__slide { padding: 10px; display: flex; flex-direction: column; }
 .carousel__item { height: 100%; width: 100%; }
-.newsletter-section { padding: 60px 0; background-size: cover; background-position: center; position: relative; color: #fff; text-align: center; }
-.newsletter-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.6); }
+
+.newsletter-section {
+  padding: 60px 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  color: #fff;
+  text-align: center;
+}
+
+.newsletter-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.0); }
 .newsletter-content { position: relative; z-index: 2; }
 .newsletter-content h2 { font-size: 2rem; margin-bottom: 10px; }
 .newsletter-content p { font-size: 1.1rem; margin-bottom: 25px; }

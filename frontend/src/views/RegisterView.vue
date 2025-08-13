@@ -137,6 +137,13 @@ export default {
 </script>
 
 <style scoped>
+/* Garantir box-sizing para todos */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .auth-page {
   padding: 60px 20px;
   background-color: #f4f5f7;
@@ -188,10 +195,14 @@ export default {
 }
 .form-field input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  max-width: 100%;
+  padding: 14px 15px;
   font-size: 1rem;
+  border-radius: 8px;
+  border: 1.8px solid #ccc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-weight: 400;
+  box-sizing: border-box;
 }
 .submit-button {
   width: 100%;
