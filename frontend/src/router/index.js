@@ -9,7 +9,9 @@ import ContactView from '../views/ContactView.vue'
 import PageView from '../views/PageView.vue'
 import BlogView from '../views/BlogView.vue'
 import PostDetailView from '../views/PostDetailView.vue'
-import AboutUsView from '../views/AboutUsView.vue' // <-- Import da página Quem Somos
+import AboutUsView from '../views/AboutUsView.vue'
+// Importando a nossa nova página de categoria
+import CategoryBlogView from '../views/CategoryBlogView.vue'
 
 const requireAuth = (to, from, next) => {
   if (!localStorage.getItem('accessToken')) {
@@ -33,6 +35,8 @@ const routes = [
   // Rotas do Blog
   { path: '/blog', name: 'blog', component: BlogView },
   { path: '/blog/:slug', name: 'post-detail', component: PostDetailView },
+  // --- ROTA DE CATEGORIA ADICIONADA AQUI ---
+  { path: '/blog/categoria/:slug', name: 'category-blog', component: CategoryBlogView },
 
   {
     path: '/area-cliente',

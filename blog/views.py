@@ -16,6 +16,20 @@ class PostListView(generics.ListAPIView):
     serializer_class = PostListSerializer
     permission_classes = [permissions.AllowAny]
 
+# --- NOVA VIEW ADICIONADA AQUI ---
+class CategoryPostListView(generics.ListAPIView):
+    """
+    View para listar todos os posts de uma categoria específica.
+    """
+    serializer_class = PostListSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        # Pega o 'slug' da categoria a partir da URL
+        category_slug = self.kwargs.get('category_slug')
+        # Filtra e retorna apenas os posts que são daquela categoria E que estão publicados.
+        return Post.objects.filter(category__slug=category_slug, is_published=True)
+
 class PostDetailView(generics.RetrieveAPIView):
     queryset = Post.objects.filter(is_published=True)
     serializer_class = PostDetailSerializer
@@ -36,28 +50,20 @@ class BlogSidebarDataView(APIView):
         serializer = BlogSidebarSerializer(data, context={'request': request})
         return Response(serializer.data)
 
-# --- NOVA VIEW PARA LISTAR E CRIAR COMENTÁRIOS ---
 class CommentListCreateView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
-    # Qualquer pessoa pode ver os comentários, mas só utilizadores logados podem criar
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
-        # Se o pedido for para criar (POST), usa o molde simples
         if self.request.method == 'POST':
             return CommentCreateSerializer
-        # Se for para listar (GET), usa o molde completo com as respostas
         return CommentSerializer
 
     def get_queryset(self):
-        # Filtra os comentários pelo slug do post que vem da URL
-        # e pega apenas os comentários principais (que não são respostas)
         post_slug = self.kwargs.get('slug')
         return Comment.objects.filter(post__slug=post_slug, is_approved=True, parent__isnull=True)
 
     def perform_create(self, serializer):
-        # Quando um novo comentário é criado, associa-o automaticamente
-        # ao post correto e ao utilizador que está logado
         post_slug = self.kwargs.get('slug')
         post = Post.objects.get(slug=post_slug)
         serializer.save(author=self.request.user, post=post)

@@ -25,13 +25,21 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
 
 class PostListSerializer(serializers.ModelSerializer):
+    """
+    Serializer para a lista de posts (versão simplificada).
+    """
     author = AuthorSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
+
     class Meta:
         model = Post
-        fields = ('id', 'title', 'slug', 'featured_image', 'summary', 'published_at', 'author', 'category')
+        # --- CORREÇÃO AQUI: Adicionando 'is_pinned' à lista de campos ---
+        fields = ('id', 'title', 'slug', 'featured_image', 'summary', 'published_at', 'author', 'category', 'is_pinned')
 
 class PostDetailSerializer(serializers.ModelSerializer):
+    """
+    Serializer para os detalhes de um único post (versão completa).
+    """
     author = AuthorSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
@@ -39,7 +47,6 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        # --- CORREÇÃO AQUI: Listando todos os campos manualmente ---
         fields = [
             'id', 'title', 'slug', 'author', 'category', 'tags',
             'featured_image', 'summary', 'content', 'is_published',
@@ -55,7 +62,6 @@ class PostDetailSerializer(serializers.ModelSerializer):
             is_published=True
         ).exclude(pk=obj.pk)[:4]
         
-        # Precisamos de passar o 'context' para que as URLs das imagens sejam construídas corretamente
         return PostListSerializer(related_posts_queryset, many=True, context=self.context).data
 
 # --- O resto dos seus serializers continua igual ---
