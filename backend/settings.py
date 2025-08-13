@@ -164,11 +164,16 @@ JAZZMIN_SETTINGS = {
         "accounts": {"name": "Administração", "icon": "fa fa-users-cog"},
         "auth": {"name": "Administração", "icon": "fa fa-users"},
     },
+    # --- ÍCONES DO BLOG ADICIONADOS AQUI ---
     "icons": {
         "auth.User": "fa fa-user",
         "auth.Group": "fa fa-users",
         "accounts.profile": "fa fa-id-card",
         "banners.banner": "fa fa-image",
+        "blog.post": "fa fa-blog",
+        "blog.category": "fa fa-folder-open",
+        "blog.tag": "fa fa-tags",
+        "blog.blogadbanner": "fa fa-ad",
         "company_info.teammember": "fa fa-user-tie",
         "contacts.contactmessage": "fa fa-headset",
         "menus.topbarlink": "fa fa-arrow-up",
@@ -185,37 +190,7 @@ JAZZMIN_SETTINGS = {
     "hide_apps": ["authtoken", "account", "socialaccount"],
 }
 
-# --- SUAS PERSONALIZAÇÕES DE UI RESTAURADAS AQUI ---
 JAZZMIN_UI_TWEAKS = {
-    "navbar_small_text": False,
-    "footer_small_text": False,
-    "body_small_text": False,
-    "brand_small_text": False,
-    "brand_colour": False,
-    "accent": "accent-primary",
-    "navbar": "navbar-white navbar-light",
-    "no_navbar_border": False,
-    "navbar_fixed": False,
-    "layout_boxed": False,
-    "footer_fixed": False,
-    "sidebar_fixed": False,
-    "sidebar": "sidebar-dark-primary",
-    "sidebar_nav_small_text": False,
-    "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": False,
-    "sidebar_nav_compact_style": True,
-    "sidebar_nav_legacy_style": False,
-    "sidebar_nav_flat_style": True,
-    "theme": "lumen",
-    "dark_mode_theme": None,
-    "button_classes": {
-        "primary": "btn-outline-primary",
-        "secondary": "btn-outline-secondary",
-        "info": "btn-info",
-        "warning": "btn-warning",
-        "danger": "btn-danger",
-        "success": "btn-success"
-    },
+    "theme": "flatly",
     "related_modal_active": True,
-    "actions_sticky_top": True
 }

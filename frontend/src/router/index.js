@@ -7,7 +7,9 @@ import OfferDetailView from '../views/OfferDetailView.vue'
 import ServiceOffersView from '../views/ServiceOffersView.vue'
 import ContactView from '../views/ContactView.vue'
 import PageView from '../views/PageView.vue'
-import AboutUsView from '../views/AboutUsView.vue' // Import adicionado
+import BlogView from '../views/BlogView.vue'
+import PostDetailView from '../views/PostDetailView.vue'
+import AboutUsView from '../views/AboutUsView.vue' // <-- Import da página Quem Somos
 
 const requireAuth = (to, from, next) => {
   if (!localStorage.getItem('accessToken')) {
@@ -18,17 +20,20 @@ const requireAuth = (to, from, next) => {
 };
 
 const routes = [
-  // Rotas Principais e Específicas (têm prioridade)
   { path: '/', name: 'home', component: HomeView },
   { path: '/register', name: 'register', component: RegisterView },
   { path: '/login', name: 'login', component: LoginView },
   { path: '/ofertas/:slug', name: 'offer-detail', component: OfferDetailView },
   { path: '/ofertas/servico/:slug', name: 'service-offers', component: ServiceOffersView },
   { path: '/contato', name: 'contact', component: ContactView },
-  { path: '/quem-somos', name: 'about-us', component: AboutUsView }, // Rota adicionada
-  
-  // --- CORREÇÃO AQUI: A rota da Área do Cliente foi movida para cima ---
-  // para que seja encontrada antes da rota genérica.
+
+  // Rota da página Quem Somos
+  { path: '/quem-somos', name: 'about-us', component: AboutUsView },
+
+  // Rotas do Blog
+  { path: '/blog', name: 'blog', component: BlogView },
+  { path: '/blog/:slug', name: 'post-detail', component: PostDetailView },
+
   {
     path: '/area-cliente',
     component: ClientAreaLayout,
@@ -42,8 +47,7 @@ const routes = [
     ]
   },
 
-  // --- ROTA GENÉRICA (FICA NO FINAL) ---
-  // Esta rota só será usada se nenhuma das rotas acima corresponder.
+  // Rota genérica para páginas de conteúdo (sempre por último)
   { path: '/:slug', name: 'page', component: PageView },
 ];
 
