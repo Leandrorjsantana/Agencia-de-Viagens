@@ -1,6 +1,7 @@
 <template>
   <div class="contact-page">
-    <div class="page-header" v-if="pageData?.site_configuration">
+    <!-- CORREÇÃO: O estilo do cabeçalho agora é dinâmico -->
+    <div class="page-header" :style="headerStyle" v-if="pageData?.site_configuration">
       <div class="container">
         <h1>{{ pageData.site_configuration.contact_page_title }}</h1>
         <p>{{ pageData.site_configuration.contact_page_subtitle }}</p>
@@ -128,6 +129,15 @@ export default {
         config.address_cep,
       ].filter(Boolean);
       return parts.join(', ');
+    },
+    // CORREÇÃO: Propriedade computada para o estilo do cabeçalho
+    headerStyle() {
+      const config = this.pageData?.site_configuration;
+      if (config && config.page_header_bg_color) {
+        return { backgroundColor: config.page_header_bg_color };
+      }
+      // Cor de fallback caso não esteja definida no admin
+      return { backgroundColor: '#003366' };
     }
   },
   methods: {
@@ -158,9 +168,9 @@ export default {
 </script>
 
 <style scoped>
+/* O seu CSS original, com a cor de fundo do cabeçalho agora controlada pelo template */
 .page-header {
   padding: 40px 0;
-  background-color: #003366;
   color: #fff;
   text-align: center;
 }

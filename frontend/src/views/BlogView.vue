@@ -1,15 +1,14 @@
 <template>
   <div class="blog-page">
-    <div class="page-header">
+    <div class="page-header" :style="headerStyle">
       <div class="container">
-        <h1>Nosso Blog</h1>
-        <p>Dicas, novidades e inspirações para a sua próxima viagem.</p>
+        <h1>{{ pageData?.site_configuration?.blog_page_title || 'Nosso Blog' }}</h1>
+        <p>{{ pageData?.site_configuration?.blog_page_subtitle || 'Dicas, novidades e inspirações para a sua próxima viagem.' }}</p>
       </div>
     </div>
 
     <div class="container page-content">
       <div class="blog-layout">
-        <!-- Coluna Principal: Lista de Posts -->
         <main class="main-content">
           <div v-if="loading" class="loading-spinner"><p>A carregar posts...</p></div>
           <div v-if="!loading && posts.length > 0" class="blog-grid">
@@ -21,11 +20,9 @@
           </div>
         </main>
 
-        <!-- Barra Lateral -->
         <aside class="sidebar">
           <div v-if="sidebarLoading" class="loading-spinner"><p>A carregar...</p></div>
           <div v-if="!sidebarLoading && sidebarData">
-            <!-- Widget de Posts Recentes -->
             <div class="widget">
               <h3 class="widget-title">Posts Recentes</h3>
               <ul class="recent-posts-list">
@@ -38,7 +35,6 @@
               </ul>
             </div>
 
-            <!-- Widget de Categorias -->
             <div class="widget">
               <h3 class="widget-title">Categorias</h3>
               <ul class="categories-list">
@@ -51,7 +47,6 @@
               </ul>
             </div>
 
-            <!-- Widget de Publicidade -->
             <div class="widget" v-if="sidebarData.ad_banners && sidebarData.ad_banners.length > 0">
               <h3 class="widget-title">Publicidade</h3>
               <div class="ad-banners">
@@ -75,6 +70,9 @@ import PostCard from '../components/PostCard.vue';
 export default {
   name: 'BlogView',
   components: { PostCard },
+  props: {
+    pageData: Object,
+  },
   data() {
     return {
       posts: [],
@@ -83,6 +81,15 @@ export default {
       sidebarLoading: true,
       backendUrl: BACKEND_URL,
     };
+  },
+  computed: {
+    headerStyle() {
+      const config = this.pageData?.site_configuration;
+      if (config && config.page_header_bg_color) {
+        return { backgroundColor: config.page_header_bg_color };
+      }
+      return { backgroundColor: '#f8f9fa' };
+    }
   },
   async created() {
     this.fetchPosts();
@@ -118,22 +125,23 @@ export default {
 
 <style scoped>
 .page-header {
-  padding: 30px 0; /* antes 50px */
-  background-color: #f8f9fa;
+  padding: 30px 0;
   text-align: center;
   border-bottom: 1px solid #e9ecef;
+  /* AJUSTE: Adicionando a cor branca para a fonte, como nas outras páginas */
+  color: #fff;
 }
-.page-header h1 { font-size: 2rem; } /* antes 2.8rem */
+.page-header h1 { font-size: 2.6rem; }
 .page-header p { font-size: 0.95rem; }
 
 .page-content {
-  padding: 30px 15px; /* antes 50px 20px */
+  padding: 30px 15px;
 }
 
 .blog-layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 30px; /* antes 40px */
+  gap: 30px;
 }
 @media (min-width: 992px) {
   .blog-layout {
@@ -143,8 +151,8 @@ export default {
 
 .blog-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* antes 320px */
-  gap: 20px; /* antes 30px */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
   align-items: stretch;
 }
 @media (min-width: 1400px) {
@@ -155,15 +163,15 @@ export default {
 
 .sidebar .widget {
   background: #fff;
-  padding: 15px; /* antes 20px */
+  padding: 15px;
   border-radius: 8px;
-  margin-bottom: 20px; /* antes 30px */
-  box-shadow: 0 1px 5px rgba(0,0,0,0.05); /* antes 0 2px 10px */
+  margin-bottom: 20px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
 }
 .widget-title {
-  font-size: 1rem; /* antes 1.2rem */
-  margin: 0 0 12px 0; /* antes 15px */
-  padding-bottom: 8px; /* antes 10px */
+  font-size: 1rem;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
   border-bottom: 1px solid #eee;
 }
 .recent-posts-list {
@@ -174,8 +182,8 @@ export default {
 .recent-post-item {
   display: flex;
   align-items: center;
-  gap: 10px; /* antes 15px */
-  margin-bottom: 10px; /* antes 15px */
+  gap: 10px;
+  margin-bottom: 10px;
   text-decoration: none;
   color: #333;
 }
@@ -183,8 +191,8 @@ export default {
   color: var(--primary-color);
 }
 .recent-post-item img {
-  width: 50px; /* antes 60px */
-  height: 50px; /* antes 60px */
+  width: 50px;
+  height: 50px;
   object-fit: cover;
   border-radius: 5px;
   flex-shrink: 0;
@@ -197,7 +205,7 @@ export default {
 .categories-list a {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0; /* antes 10px */
+  padding: 8px 0;
   border-bottom: 1px solid #f0f0f0;
   text-decoration: none;
   color: #555;
@@ -208,13 +216,13 @@ export default {
 }
 .categories-list .count {
   background: #eee;
-  padding: 2px 6px; /* antes 2px 8px */
+  padding: 2px 6px;
   border-radius: 20px;
   font-size: 0.8rem;
 }
 .ad-banners img {
   width: 100%;
   border-radius: 5px;
-  margin-bottom: 10px; /* antes 15px */
+  margin-bottom: 10px;
 }
 </style>

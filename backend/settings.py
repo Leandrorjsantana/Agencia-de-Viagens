@@ -17,7 +17,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Apps de Terceiros
     'rest_framework',
+    'django_filters', # <-- Ferramenta de filtros adicionada aqui
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'dj_rest_auth',
@@ -30,6 +33,8 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'ckeditor',
     'ckeditor_uploader',
+
+    # Nossos Apps
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
     'site_settings.apps.SiteSettingsConfig',
@@ -43,6 +48,7 @@ INSTALLED_APPS = [
     'subscribers.apps.SubscribersConfig',
     'contacts.apps.ContactsConfig',
     'company_info.apps.CompanyInfoConfig',
+    'reviews.apps.ReviewsConfig',
 ]
 
 MIDDLEWARE = [
@@ -108,6 +114,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    # Adicionando o backend de filtros como padrão
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 CORS_ALLOWED_ORIGINS = [
@@ -145,8 +153,8 @@ JAZZMIN_SETTINGS = {
     "custom_js": "core/js/admin_custom.js",
     "order_with_respect_to": [
         "site_settings", "banners", "menus", "company_info",
-        "services", "offers", "reservations",
-        "contacts", "subscribers", "blog", "pages",
+        "services", "offers", "reservations", "reviews", "contacts",
+        "subscribers", "blog", "pages",
         "auth", "accounts",
     ],
     "apps": {
@@ -156,6 +164,7 @@ JAZZMIN_SETTINGS = {
         "company_info": {"name": "Gestão de Conteúdo", "icon": "fa fa-users"},
         "pages": {"name": "Gestão de Conteúdo", "icon": "fa fa-file-alt"},
         "blog": {"name": "Gestão de Conteúdo", "icon": "fa fa-rss"},
+        "reviews": {"name": "Gestão de Conteúdo", "icon": "fa fa-star"},
         "services": {"name": "Catálogo", "icon": "fa fa-concierge-bell"},
         "offers": {"name": "Catálogo", "icon": "fa fa-tag"},
         "reservations": {"name": "Vendas", "icon": "fa fa-file-invoice-dollar"},
@@ -164,7 +173,6 @@ JAZZMIN_SETTINGS = {
         "accounts": {"name": "Administração", "icon": "fa fa-users-cog"},
         "auth": {"name": "Administração", "icon": "fa fa-users"},
     },
-    # --- ÍCONES DO BLOG ADICIONADOS AQUI ---
     "icons": {
         "auth.User": "fa fa-user",
         "auth.Group": "fa fa-users",
@@ -183,6 +191,7 @@ JAZZMIN_SETTINGS = {
         "pages.page": "fa fa-file-lines",
         "reservations.reservation": "fa fa-file-signature",
         "reservations.reservationdocument": "fa fa-file-alt",
+        "reviews.review": "fa fa-comment-alt",
         "services.service": "fa fa-concierge-bell",
         "site_settings.siteconfiguration": "fa fa-cogs",
         "subscribers.subscriber": "fa fa-at",

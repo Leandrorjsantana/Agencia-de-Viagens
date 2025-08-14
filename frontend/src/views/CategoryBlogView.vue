@@ -1,8 +1,7 @@
 <template>
   <div class="blog-page">
-    <div class="page-header">
+    <div class="page-header" :style="headerStyle">
       <div class="container">
-        <!-- O título agora é dinâmico -->
         <h1>Categoria: {{ categoryName }}</h1>
         <p>A explorar todos os artigos sobre {{ categoryName }}.</p>
       </div>
@@ -10,7 +9,6 @@
 
     <div class="container page-content">
       <div class="blog-layout">
-        <!-- Coluna Principal: Lista de Posts -->
         <main class="main-content">
           <div v-if="loading" class="loading-spinner"><p>A carregar posts...</p></div>
           <div v-if="!loading && posts.length > 0" class="posts-grid">
@@ -25,7 +23,6 @@
           </div>
         </main>
 
-        <!-- Barra Lateral (reutilizada) -->
         <aside class="sidebar">
           <div v-if="sidebarLoading" class="loading-spinner"><p>A carregar...</p></div>
           <div v-if="!sidebarLoading && sidebarData">
@@ -74,6 +71,9 @@ import PostCard from '../components/PostCard.vue';
 export default {
   name: 'CategoryBlogView',
   components: { PostCard },
+  props: {
+    pageData: Object,
+  },
   data() {
     return {
       posts: [],
@@ -84,8 +84,16 @@ export default {
       categoryName: ''
     };
   },
+  computed: {
+    headerStyle() {
+      const config = this.pageData?.site_configuration;
+      if (config && config.page_header_bg_color) {
+        return { backgroundColor: config.page_header_bg_color };
+      }
+      return { backgroundColor: '#003366' };
+    }
+  },
   watch: {
-    // Observa mudanças na URL para recarregar os posts da nova categoria
     '$route.params.slug': {
       immediate: true,
       handler() {
@@ -95,19 +103,27 @@ export default {
   },
   methods: {
     getMediaUrl,
+    // ===== AJUSTE PRINCIPAL AQUI =====
     async fetchCategoryPosts() {
       this.loading = true;
       const slug = this.$route.params.slug;
       try {
+        // REVERTIDO: Voltando para a URL da API que estava correta e funcional
         const response = await axios.get(`${this.backendUrl}/api/v1/blog/categoria/${slug}/`);
         this.posts = response.data;
-        // Pega o nome da categoria do primeiro post para usar no título
-        if (this.posts.length > 0) {
+        
+        // Mantendo a lógica original para pegar o nome da categoria
+        if (this.posts.length > 0 && this.posts[0].category && this.posts[0].category.name) {
           this.categoryName = this.posts[0].category.name;
+        } else {
+            // Se não encontrar, usa o slug da URL como fallback
+            const formattedSlug = slug.replace(/-/g, ' ');
+            this.categoryName = formattedSlug.charAt(0).toUpperCase() + formattedSlug.slice(1);
         }
       } catch (error) {
         console.error("Erro ao buscar os posts da categoria:", error);
         this.posts = [];
+        this.categoryName = "Categoria não encontrada";
       } finally {
         this.loading = false;
       }
@@ -131,8 +147,13 @@ export default {
 </script>
 
 <style scoped>
-/* Os estilos são reutilizados da página principal do blog */
-.page-header { padding: 50px 0; background-color: #f8f9fa; text-align: center; border-bottom: 1px solid #e9ecef; }
+/* Estilos mantidos, pois já estavam corretos */
+.page-header { 
+  padding: 50px 0; 
+  text-align: center; 
+  border-bottom: 1px solid #e9ecef;
+  color: #fff;
+}
 .page-header h1 { font-size: 2.8rem; }
 .page-content { padding: 50px 20px; }
 .blog-layout { display: grid; grid-template-columns: 1fr; gap: 40px; }

@@ -3,6 +3,7 @@
 from rest_framework import serializers
 from .models import Reservation, ReservationDocument
 from offers.models import Offer
+from blog.serializers import AuthorSerializer # Reutilizado para consistência
 
 class ReservationDocumentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,15 +34,21 @@ class ReservationSerializer(serializers.ModelSerializer):
             'documents'
         )
 
-# --- CLASSE QUE FALTAVA ADICIONADA AQUI ---
 class ReservationCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
-        # Campos que o frontend irá enviar ao criar uma reserva
         fields = ('offer', 'start_date', 'end_date', 'total_price', 'notes')
 
-# --- CLASSE QUE TAMBÉM ERA NECESSÁRIA PARA O UPLOAD ---
 class ReservationDocumentUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReservationDocument
         fields = ('description', 'file')
+
+class ReservationForReviewSerializer(serializers.ModelSerializer):
+    offer_title = serializers.CharField(source='offer.title', read_only=True)
+    # Precisamos do ID da oferta para associar a avaliação
+    offer_id = serializers.IntegerField(source='offer.id', read_only=True)
+
+    class Meta:
+        model = Reservation
+        fields = ('id', 'offer_title', 'offer_id')

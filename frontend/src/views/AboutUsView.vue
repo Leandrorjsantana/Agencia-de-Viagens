@@ -1,22 +1,19 @@
 <template>
   <div class="about-us-page" v-if="pageData">
-    <!-- 1. Cabeçalho Inspirador -->
     <section class="page-header" :style="headerStyle">
       <div class="header-overlay"></div>
       <div class="container header-content">
-        <h1>Conheça a Rio Mundo Viagens</h1>
-        <p>Transformamos sonhos em viagens inesquecíveis.</p>
+        <h1>{{ pageData.site_configuration.about_page_title || 'Conheça a Nossa História' }}</h1>
+        <p>{{ pageData.site_configuration.about_page_subtitle || 'Transformamos sonhos em viagens inesquecíveis.' }}</p>
       </div>
     </section>
 
-    <!-- 2. História da Agência -->
     <section class="content-section">
       <div class="container">
         <div class="history-content" v-html="pageData.site_configuration.about_us_history"></div>
       </div>
     </section>
 
-    <!-- 3. Missão, Visão e Valores -->
     <section class="values-section">
       <div class="container">
         <div class="values-grid">
@@ -41,10 +38,9 @@
       </div>
     </section>
 
-    <!-- 5. Equipa -->
     <section class="team-section" v-if="teamMembers && teamMembers.length > 0">
       <div class="container">
-        <h2 class="section-title">Nossa Equipa</h2>
+        <h2 class="section-title">Conheça a equipe que transforma viagens em histórias.</h2>
         <div class="team-grid">
           <div v-for="member in teamMembers" :key="member.id" class="team-card">
             <img :src="getMediaUrl(member.photo)" :alt="member.name">
@@ -56,7 +52,6 @@
       </div>
     </section>
 
-    <!-- 6. Credibilidade -->
     <section class="stats-section">
       <div class="container">
         <div class="stat-item">
@@ -74,7 +69,6 @@
       </div>
     </section>
 
-    <!-- 7. Chamado à Ação Final -->
     <section class="cta-section">
       <div class="container">
         <h2>Vamos planear a sua próxima viagem?</h2>
@@ -98,11 +92,25 @@ export default {
     };
   },
   computed: {
+    // AJUSTE: Lógica do headerStyle atualizada para seguir o padrão
     headerStyle() {
-      const img = this.pageData?.site_configuration?.about_us_header_image;
-      if (img) {
-        return { backgroundImage: `url(${this.getMediaUrl(img)})` };
+      const config = this.pageData?.site_configuration;
+      // Se não houver configuração, usa o fallback final
+      if (!config) {
+        return { backgroundColor: '#003366' };
       }
+
+      // Prioridade 1: Imagem de fundo específica desta página
+      if (config.about_us_header_image) {
+        return { backgroundImage: `url(${this.getMediaUrl(config.about_us_header_image)})` };
+      }
+
+      // Prioridade 2: Cor de fundo global para cabeçalhos de página
+      if (config.page_header_bg_color) {
+        return { backgroundColor: config.page_header_bg_color };
+      }
+      
+      // Fallback final, caso nenhuma das opções acima esteja definida
       return { backgroundColor: '#003366' };
     }
   },
@@ -124,7 +132,7 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos para uma página "Quem Somos" mais compacta e elegante */
+/* Nenhum ajuste necessário aqui, os estilos já são compatíveis */
 .page-header {
   position: relative;
   height: 40vh;
