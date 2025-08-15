@@ -14,7 +14,7 @@ import CategoryBlogView from '../views/CategoryBlogView.vue'
 import ExperiencesView from '../views/ExperiencesView.vue'
 import HelpCenterView from '../views/HelpCenterView.vue'
 // Importando a nossa nova página
-import TelevendasView from '../views/TelevendasView.vue'
+import InsuranceView from '../views/InsuranceView.vue'
 
 const requireAuth = (to, from, next) => {
   if (!localStorage.getItem('accessToken')) {
@@ -33,17 +33,13 @@ const routes = [
   { path: '/contato', name: 'contact', component: ContactView },
   { path: '/quem-somos', name: 'about-us', component: AboutUsView },
   { path: '/experiencias', name: 'experiencias', component: ExperiencesView },
-  
-  // Rotas do Blog
   { path: '/blog', name: 'blog', component: BlogView },
   { path: '/blog/:slug', name: 'post-detail', component: PostDetailView },
   { path: '/blog/categoria/:slug', name: 'category-blog', component: CategoryBlogView },
-
-  // --- ROTA DE AJUDA ADICIONADA AQUI ---
   { path: '/ajuda', name: 'help-center', component: HelpCenterView },
   
-  // --- ROTA DE TELEVENDAS ATUALIZADA AQUI ---
-  { path: '/televendas', name: 'televendas', component: TelevendasView },
+  // --- ROTA DE SEGURO VIAGEM ADICIONADA AQUI ---
+  { path: '/seguro-viagem', name: 'insurance', component: InsuranceView },
 
   {
     path: '/area-cliente',

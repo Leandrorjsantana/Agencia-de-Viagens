@@ -17,11 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'help_center.apps.HelpCenterConfig',
-
-    # Apps de Terceiros
     'rest_framework',
-    'django_filters',  # <-- Ferramenta de filtros
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'dj_rest_auth',
@@ -50,6 +46,8 @@ INSTALLED_APPS = [
     'contacts.apps.ContactsConfig',
     'company_info.apps.CompanyInfoConfig',
     'reviews.apps.ReviewsConfig',
+    'help_center.apps.HelpCenterConfig',
+    'insurance.apps.InsuranceConfig', # App de Seguros adicionado
 ]
 
 MIDDLEWARE = [
@@ -93,10 +91,10 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
 LANGUAGE_CODE = 'pt-br'
@@ -153,8 +151,8 @@ JAZZMIN_SETTINGS = {
     "custom_js": "core/js/admin_custom.js",
     "order_with_respect_to": [
         "site_settings", "banners", "menus", "company_info",
-        "services", "offers", "reservations", "reviews", "contacts",
-        "subscribers", "blog", "pages",
+        "services", "offers", "insurance", "reservations", "reviews", "contacts",
+        "subscribers", "blog", "pages", "help_center",
         "auth", "accounts",
     ],
     "apps": {
@@ -165,14 +163,15 @@ JAZZMIN_SETTINGS = {
         "pages": {"name": "Gestão de Conteúdo", "icon": "fa fa-file-alt"},
         "blog": {"name": "Gestão de Conteúdo", "icon": "fa fa-rss"},
         "reviews": {"name": "Gestão de Conteúdo", "icon": "fa fa-star"},
+        "help_center": {"name": "Gestão de Conteúdo", "icon": "fa fa-question-circle"},
         "services": {"name": "Catálogo", "icon": "fa fa-concierge-bell"},
         "offers": {"name": "Catálogo", "icon": "fa fa-tag"},
+        "insurance": {"name": "Catálogo", "icon": "fa fa-shield-alt"},
         "reservations": {"name": "Vendas", "icon": "fa fa-file-invoice-dollar"},
         "contacts": {"name": "Vendas", "icon": "fa fa-headset"},
         "subscribers": {"name": "Marketing", "icon": "fa fa-envelope"},
         "accounts": {"name": "Administração", "icon": "fa fa-users-cog"},
         "auth": {"name": "Administração", "icon": "fa fa-users"},
-        "help_center": {"name": "Ajuda", "icon": "fa fa-question-circle"},  # Adicionado ícone
     },
     "icons": {
         "auth.User": "fa fa-user",
@@ -185,6 +184,12 @@ JAZZMIN_SETTINGS = {
         "blog.blogadbanner": "fa fa-ad",
         "company_info.teammember": "fa fa-user-tie",
         "contacts.contactmessage": "fa fa-headset",
+        "help_center.helpcategory": "fa fa-folder",
+        "help_center.helparticle": "fa fa-file-alt",
+        "insurance.insurancebenefit": "fa fa-check-circle",
+        "insurance.insuranceplan": "fa fa-list-alt",
+        "insurance.insurancefaq": "fa fa-question",
+        "insurance.trustseal": "fa fa-award",
         "menus.topbarlink": "fa fa-arrow-up",
         "menus.menuitem": "fa fa-bars",
         "menus.socialmedialink": "fa fa-share-alt",
@@ -196,44 +201,11 @@ JAZZMIN_SETTINGS = {
         "services.service": "fa fa-concierge-bell",
         "site_settings.siteconfiguration": "fa fa-cogs",
         "subscribers.subscriber": "fa fa-at",
-        "help_center.category": "fa fa-question-circle",  # Ícone da categoria de ajuda
     },
     "hide_apps": ["authtoken", "account", "socialaccount"],
 }
 
 JAZZMIN_UI_TWEAKS = {
-    "navbar_small_text": False,
-    "footer_small_text": False,
-    "body_small_text": False,
-    "brand_small_text": False,
-    "brand_colour": False,
-    "accent": "accent-primary",
-    "navbar": "navbar-white navbar-light",
-    "no_navbar_border": False,
-    "navbar_fixed": False,
-    "layout_boxed": False,
-    "footer_fixed": False,
-    "sidebar_fixed": False,
-    "sidebar": "sidebar-dark-primary",
-    "sidebar_nav_small_text": False,
-    "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": False,
-    "sidebar_nav_compact_style": False,
-    "sidebar_nav_legacy_style": True,
-    "sidebar_nav_flat_style": False,
-    "theme": "lumen",
-    "dark_mode_theme": None,
-    "button_classes": {
-        "primary": "btn-outline-primary",
-        "secondary": "btn-outline-secondary",
-        "info": "btn-info",
-        "warning": "btn-warning",
-        "danger": "btn-danger",
-        "success": "btn-success"
-    },
-    "related_modal_active": True
+    "theme": "flatly",
+    "related_modal_active": True,
 }
-
-# Configuração de arquivos de mídia (uploads de usuários)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'

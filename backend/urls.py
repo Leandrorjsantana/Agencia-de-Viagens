@@ -1,5 +1,4 @@
 # backend/urls.py
-
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -8,8 +7,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-
-    # --- NOSSAS ROTAS DE API V1 ---
     path('api/v1/', include('core.urls')),
     path('api/v1/auth/', include('dj_rest_auth.urls')),
     path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),
@@ -22,9 +19,10 @@ urlpatterns = [
     path('api/v1/company-info/', include('company_info.urls')),
     path('api/v1/reviews/', include('reviews.urls')),
     path('api/v1/blog/', include('blog.urls')),
-    
-    # Conectando as rotas do nosso novo app 'help_center'
     path('api/v1/help-center/', include('help_center.urls')),
+
+    # Conectando as rotas do nosso novo app 'insurance'
+    path('api/v1/insurance/', include('insurance.urls')),
 ]
 
 if settings.DEBUG:
