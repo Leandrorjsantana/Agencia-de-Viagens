@@ -57,20 +57,13 @@ export default {
   name: 'OfferCard',
   props: {
     offer: { type: Object, required: true },
-    backendUrl: {
-      type: String,
-      required: false,
-      default: ''
-    }
+    // A prop 'backendUrl' foi REMOVIDA, pois não é mais necessária.
   },
   computed: {
     imageUrl() {
-      if (!this.offer || !this.offer.image) return '/placeholder.jpg';
-      const img = this.offer.image;
-      if (/^https?:\/\//i.test(img)) return img;
-      const base = (this.backendUrl || '').replace(/\/+$/,'');
-      const prefix = img.startsWith('/') ? '' : '/';
-      return base ? `${base}${prefix}${img}` : `${prefix}${img}`;
+      // LÓGICA SIMPLIFICADA: Apenas usa a URL da imagem que já vem completa da API.
+      // Se não houver imagem, usa uma imagem de placeholder.
+      return this.offer?.image || '/placeholder.jpg';
     },
     splitDetails() {
       if (!this.offer || !this.offer.details) return [];
@@ -88,70 +81,18 @@ export default {
 </script>
 
 <style scoped>
-/* O seu CSS original, com o ajuste fino para o alinhamento */
+/* SEUS ESTILOS COMPLETOS AQUI */
 * { box-sizing: border-box; }
-
-.offer-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  height: 100%;
-  transition: transform .15s ease, box-shadow .15s ease;
-}
+.offer-card { background: #fff; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; height: 100%; transition: transform .15s ease, box-shadow .15s ease; }
 .offer-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(0,0,0,0.12); }
-
 .offer-image-container { position: relative; width: 100%; }
 .offer-image-container img { width: 100%; height: 200px; object-fit: cover; display: block; }
-
-.duration-on-image {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background-color: rgba(0,0,0,0.6);
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 0.8rem;
-}
-
+.duration-on-image { position: absolute; bottom: 10px; left: 10px; background-color: rgba(0,0,0,0.6); color: #fff; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; }
 .card-content { padding: 18px; display: flex; flex-direction: column; flex: 1 1 auto; }
 .card-content-top { flex: 1 1 auto; }
-
-/* --- CORREÇÃO AQUI --- */
-.card-content-bottom {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
-  display: flex;
-  /* Organiza os itens em coluna */
-  flex-direction: column;
-  /* Alinha tudo à direita */
-  align-items: flex-end;
-}
-.price-section {
-  text-align: right;
-  width: 100%; /* Garante que o alinhamento à direita funcione */
-  margin-bottom: 15px; /* Adiciona espaço entre o preço e o botão */
-}
-.details-button {
-  display: inline-block;
-  width: auto; /* O botão agora tem a largura do seu conteúdo */
-  min-width: 150px; /* Garante uma largura mínima para o botão */
-  padding: 12px 20px;
-  border-radius: 8px;
-  text-align: center;
-  background-color: var(--primary-color);
-  color: #fff;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-/* --- FIM DA CORREÇÃO --- */
-
+.card-content-bottom { margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; display: flex; flex-direction: column; align-items: flex-end; }
+.price-section { text-align: right; width: 100%; margin-bottom: 15px; }
+.details-button { display: inline-block; width: auto; min-width: 150px; padding: 12px 20px; border-radius: 8px; text-align: center; background-color: var(--primary-color); color: #fff; font-weight: 700; text-decoration: none; transition: all 0.2s ease; }
 .promo-tag { display: inline-block; margin-bottom: 10px; background-color: #eafbe9; color: #066b3a; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; }
 .package-details-card { display: block; font-size: 0.9rem; color: #666; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
 .offer-title-card { font-size: 1.1rem; color: #111; margin: 0 0 10px 0; font-weight: 700; line-height: 1.25; }

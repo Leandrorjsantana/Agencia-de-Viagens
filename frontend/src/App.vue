@@ -69,32 +69,53 @@
       </div>
     </footer>
 
-    <!-- Inserção do botão "Back to Top" -->
-    <BackToTop />
+    <a 
+      v-if="!isClientArea && pageData?.site_configuration?.public_whatsapp"
+      :href="whatsappLink" 
+      class="whatsapp-fab" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      aria-label="Fale connosco pelo WhatsApp"
+    >
+      <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <button 
+      v-if="isScrolled" 
+      @click="scrollToTop" 
+      class="back-to-top-fab"
+      aria-label="Voltar ao topo"
+    >
+      <i class="fas fa-arrow-up"></i>
+    </button>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import BackToTop from './components/BackToTop.vue'; // Importa o componente BackToTop
-
 export default {
   name: 'App',
-  components: {
-    BackToTop,  // Registra o componente
-  },
   data() {
     return {
       pageData: null,
       loading: true,
       backendUrl: "http://127.0.0.1:8000",
       isLoggedIn: false,
+      isScrolled: false,
     };
   },
   computed: {
-    logoUrl() { return this.pageData?.site_configuration?.logo ? `${this.backendUrl}${this.pageData.site_configuration.logo}` : ''; },
+    logoUrl() {
+      // CORREÇÃO: Apenas retorna a URL da logo, pois ela já vem completa da API.
+      return this.pageData?.site_configuration?.logo || '';
+    },
     isClientArea() {
       return this.$route.matched.some(record => record.meta.isClientArea);
+    },
+    whatsappLink() {
+      const phone = this.pageData?.site_configuration?.public_whatsapp || '';
+      const message = "Olá! Gostaria de mais informações sobre as vossas viagens.";
+      return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     }
   },
   methods: {
@@ -112,8 +133,15 @@ export default {
       if (config.seo_title) document.title = config.seo_title;
       if (config.favicon) {
         const faviconTag = document.getElementById('favicon');
-        if (faviconTag) faviconTag.href = `${this.backendUrl}${config.favicon}`;
+        // CORREÇÃO: Apenas usa a URL do favicon, pois ela já vem completa da API.
+        if (faviconTag) faviconTag.href = config.favicon;
       }
+    },
+    handleScroll() {
+      this.isScrolled = window.scrollY > 300;
+    },
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   },
   watch: {
@@ -123,12 +151,18 @@ export default {
   created() {
     this.fetchSiteData();
     this.checkLoginStatus();
+  },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
   }
 };
 </script>
 
 <style>
-/* ... SEU CSS ATUAL AQUI ... */
+/* SEUS ESTILOS COMPLETOS AQUI */
 body { font-family: var(--main-font, sans-serif); margin: 0; background-color: #f4f5f7; }
 #app { display: flex; flex-direction: column; min-height: 100vh; }
 .body-wrapper { flex-grow: 1; display: flex; flex-direction: column; }
@@ -147,23 +181,14 @@ body { font-family: var(--main-font, sans-serif); margin: 0; background-color: #
 .main-navigation a:hover, .main-navigation a.router-link-exact-active { color: var(--primary-color); }
 .user-nav { flex-shrink: 0; }
 .login-button { background-color: var(--primary-color); color: #fff !important; padding: 10px 15px; border-radius: 5px; font-weight: bold; text-decoration: none; }
-/* --- ESTILO APRIMORADO PARA O BOTÃO "MINHA CONTA" --- */
-.client-area-button {
-  background: linear-gradient(45deg, #28a745, #20c997);
-  color: #fff !important;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-weight: bold;
-  text-decoration: none;
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-  transition: all 0.3s ease;
-}
-.client-area-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 7px 20px rgba(40, 167, 69, 0.5);
-}
+.client-area-button { background: linear-gradient(45deg, #28a745, #20c997); color: #fff !important; padding: 10px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); transition: all 0.3s ease; }
+.client-area-button:hover { transform: translateY(-3px); box-shadow: 0 7px 20px rgba(40, 167, 69, 0.5); }
 .main-footer { background-color: var(--footer-bg-color); color: var(--footer-text-color); padding: 40px 0; text-align: center; }
 .social-icons { margin-bottom: 20px; }
 .social-icons a { color: #fff; font-size: 1.5rem; margin: 0 10px; transition: color 0.3s; }
 .social-icons a:hover { color: var(--primary-color); }
+.whatsapp-fab { position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px; background-color: #25D366; color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2rem; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; transition: transform 0.3s ease; }
+.whatsapp-fab:hover { transform: scale(1.1); }
+.back-to-top-fab { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background-color: #343a40; color: #fff; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 999; transition: transform 0.3s ease, opacity 0.3s ease; }
+.back-to-top-fab:hover { transform: scale(1.1); }
 </style>

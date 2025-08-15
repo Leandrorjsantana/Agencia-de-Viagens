@@ -1,4 +1,5 @@
 # backend/settings.py
+
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -16,7 +17,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Apps de Terceiros
     'rest_framework',
+    'django_filters',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'dj_rest_auth',
@@ -29,6 +33,8 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'ckeditor',
     'ckeditor_uploader',
+
+    # Nossos Apps
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
     'site_settings.apps.SiteSettingsConfig',
@@ -45,7 +51,8 @@ INSTALLED_APPS = [
     'reviews.apps.ReviewsConfig',
     'help_center.apps.HelpCenterConfig',
     'insurance.apps.InsuranceConfig',
-    'exchange.apps.ExchangeConfig', # <-- App de Câmbio adicionado
+    'exchange.apps.ExchangeConfig',
+    'promotions.apps.PromotionsConfig', # App de Promoções adicionado
 ]
 
 MIDDLEWARE = [
@@ -148,7 +155,7 @@ JAZZMIN_SETTINGS = {
     "custom_css": "core/css/admin_custom.css",
     "custom_js": "core/js/admin_custom.js",
     "order_with_respect_to": [
-        "site_settings", "banners", "menus", "company_info",
+        "site_settings", "banners", "promotions", "menus", "company_info",
         "services", "offers", "insurance", "reservations", "reviews", "contacts",
         "subscribers", "blog", "pages", "help_center",
         "auth", "accounts",
@@ -156,6 +163,7 @@ JAZZMIN_SETTINGS = {
     "apps": {
         "site_settings": {"name": "Configurações do Site", "icon": "fa fa-cog"},
         "banners": {"name": "Gestão da Página Inicial", "icon": "fa fa-images"},
+        "promotions": {"name": "Gestão da Página Inicial", "icon": "fa fa-star"},
         "menus": {"name": "Gestão de Menus", "icon": "fa fa-bars"},
         "company_info": {"name": "Gestão de Conteúdo", "icon": "fa fa-users"},
         "pages": {"name": "Gestão de Conteúdo", "icon": "fa fa-file-alt"},
@@ -176,6 +184,7 @@ JAZZMIN_SETTINGS = {
         "auth.Group": "fa fa-users",
         "accounts.profile": "fa fa-id-card",
         "banners.banner": "fa fa-image",
+        "promotions.promotioncard": "fa fa-gem",
         "blog.post": "fa fa-blog",
         "blog.category": "fa fa-folder-open",
         "blog.tag": "fa fa-tags",

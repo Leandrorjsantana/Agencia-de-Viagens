@@ -10,12 +10,13 @@ class BannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Banner
         # Define os campos que serão expostos na API.
-        fields = [
+        # CORRIGIDO: O campo 'link' foi trocado por 'link_url'.
+        fields = (
             'id', 
             'title', 
             'subtitle', 
             'image', 
-            'link', 
+            'link_url', 
             'is_active',
             'order'
-        ]
+        )

@@ -1,7 +1,7 @@
 # menus/serializers.py
 
 from rest_framework import serializers
-from .models import TopBarLink, MenuItem
+from .models import TopBarLink, MenuItem, SocialMediaLink
 
 class TopBarLinkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,4 +11,10 @@ class TopBarLinkSerializer(serializers.ModelSerializer):
 class MenuItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenuItem
-        fields = ('id', 'title', 'url', 'is_external')
+        fields = ('id', 'title', 'url')
+
+class SocialMediaLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialMediaLink
+        # CORRIGIDO: O campo 'platform' foi trocado por 'name', que é o campo correto no seu models.py
+        fields = ('id', 'name', 'url', 'icon_class')

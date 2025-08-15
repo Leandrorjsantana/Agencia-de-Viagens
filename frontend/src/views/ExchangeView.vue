@@ -8,7 +8,7 @@
     </div>
 
     <div class="container page-content">
-      <div v-if="loading" class="loading-spinner"><p>A buscar cotações em tempo real...</p></div>
+      <div v-if="loading" class="loading-spinner"><p>Buscando cotações em tempo real...</p></div>
       
       <div v-if="!loading && rates.length > 0" class="exchange-layout">
         <!-- Coluna Principal: Cards de Moedas -->
@@ -87,7 +87,6 @@ export default {
       }
       return '';
     },
-    // --- CORREÇÃO AQUI: Seleciona as 4 moedas principais para os cards ---
     mainRates() {
       const mainCodes = ['USD', 'USDT', 'EUR', 'GBP'];
       return this.rates.filter(rate => mainCodes.includes(rate.code));
@@ -141,49 +140,51 @@ export default {
 
 <style scoped>
 .page-header { padding: 60px 0; color: #fff; text-align: center; }
-.page-header h1 { font-size: 2.8rem; }
-.page-header p { font-size: 1rem; margin-top: 10px; opacity: 0.8; }
-.page-content { padding: 50px 20px; }
-.exchange-layout { display: grid; grid-template-columns: 1fr; gap: 40px; }
+.page-header h1 { font-size: 2.4rem; line-height: 1.2; }
+.page-header p { font-size: 0.95rem; margin-top: 10px; opacity: 0.8; }
+.page-content { padding: 30px 20px; }
+.exchange-layout { display: grid; grid-template-columns: 1fr; gap: 30px; }
 @media (min-width: 992px) { .exchange-layout { grid-template-columns: 2fr 1fr; } }
 
-/* --- CORREÇÃO AQUI: Ajustando a grelha para 4 colunas --- */
 .rates-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
 }
-@media (min-width: 768px) {
-  .rates-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-@media (min-width: 1200px) {
-  .rates-grid {
-    grid-template-columns: 1fr 1fr; /* Mantém 2x2 para melhor visualização */
-  }
-}
+@media (min-width: 768px) { .rates-grid { grid-template-columns: 1fr 1fr; } }
 
-.rate-card { padding: 20px; border-radius: 12px; color: #fff; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.rate-card { padding: 15px; border-radius: 12px; color: #fff; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
 .rate-card.usd { background: linear-gradient(45deg, #007bff, #0056b3); }
-.rate-card.usdt { background: linear-gradient(45deg, #28a745, #20c997); } /* Nova cor para Dólar Turismo */
+.rate-card.usdt { background: linear-gradient(45deg, #28a745, #20c997); }
 .rate-card.eur { background: linear-gradient(45deg, #17a2b8, #117a8b); }
 .rate-card.gbp { background: linear-gradient(45deg, #6610f2, #4a09a5); }
 
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.card-header h3 { margin: 0; font-size: 1.2rem; }
-.rate-value { font-size: 2.2rem; font-weight: 700; }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.card-header h3 { margin: 0; font-size: 1.1rem; line-height: 1.1; }
+.rate-value { font-size: 1.8rem; font-weight: 700; }
 .rate-variation { font-weight: 500; }
 .rate-variation.positive { color: #c8e6c9; }
 .rate-variation.negative { color: #ffcdd2; }
-.rate-details { font-size: 0.9rem; opacity: 0.8; display: flex; justify-content: space-between; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px; }
+.rate-details { font-size: 0.85rem; opacity: 0.8; display: flex; justify-content: space-between; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; }
 
-.sidebar .converter-widget { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-.converter-form { display: grid; grid-template-columns: 1fr; gap: 15px; align-items: center; }
-@media (min-width: 400px) { .converter-form { grid-template-columns: 1fr auto 1fr; } }
-.converter-form input, .converter-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; }
-.swap-icon { text-align: center; }
-.converter-result { margin-top: 20px; text-align: center; }
+.sidebar .converter-widget { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+.converter-form {
+  display: flex;
+  flex-wrap: nowrap; /* evita quebra de linha */
+  gap: 8px;
+  align-items: center;
+}
+.converter-form input, .converter-form select { flex: 1 1 auto; min-width: 60px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.95rem; }
+.swap-icon { text-align: center; flex-shrink: 0; }
+
+.converter-result { margin-top: 15px; text-align: center; }
 .converter-result p { margin: 0; color: #6c757d; }
-.converter-result strong { font-size: 1.8rem; color: var(--primary-color); }
+.converter-result strong { font-size: 1.5rem; color: var(--primary-color); }
+
+/* Ajuste total em telas pequenas */
+@media (max-width: 576px) {
+  .converter-form { flex-wrap: wrap; gap: 6px; }
+  .converter-widget h3 { font-size: 1.2rem; }
+  .converter-result strong { font-size: 1.3rem; }
+}
 </style>
