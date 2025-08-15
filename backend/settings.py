@@ -1,5 +1,4 @@
 # backend/settings.py
-
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,8 +29,6 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'ckeditor',
     'ckeditor_uploader',
-
-    # Nossos Apps
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
     'site_settings.apps.SiteSettingsConfig',
@@ -47,7 +44,8 @@ INSTALLED_APPS = [
     'company_info.apps.CompanyInfoConfig',
     'reviews.apps.ReviewsConfig',
     'help_center.apps.HelpCenterConfig',
-    'insurance.apps.InsuranceConfig', # App de Seguros adicionado
+    'insurance.apps.InsuranceConfig',
+    'exchange.apps.ExchangeConfig', # <-- App de Câmbio adicionado
 ]
 
 MIDDLEWARE = [

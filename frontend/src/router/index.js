@@ -13,8 +13,9 @@ import AboutUsView from '../views/AboutUsView.vue'
 import CategoryBlogView from '../views/CategoryBlogView.vue'
 import ExperiencesView from '../views/ExperiencesView.vue'
 import HelpCenterView from '../views/HelpCenterView.vue'
-// Importando a nossa nova página
 import InsuranceView from '../views/InsuranceView.vue'
+import TelevendasView from '../views/TelevendasView.vue' // Importa a página de Televendas
+import ExchangeView from '../views/ExchangeView.vue'   // Importa a nova página de Cotação
 
 const requireAuth = (to, from, next) => {
   if (!localStorage.getItem('accessToken')) {
@@ -37,9 +38,11 @@ const routes = [
   { path: '/blog/:slug', name: 'post-detail', component: PostDetailView },
   { path: '/blog/categoria/:slug', name: 'category-blog', component: CategoryBlogView },
   { path: '/ajuda', name: 'help-center', component: HelpCenterView },
-  
-  // --- ROTA DE SEGURO VIAGEM ADICIONADA AQUI ---
   { path: '/seguro-viagem', name: 'insurance', component: InsuranceView },
+  
+  // --- ROTAS RESTAURADAS E ADICIONADAS AQUI ---
+  { path: '/televendas', name: 'televendas', component: TelevendasView },
+  { path: '/cotacao', name: 'exchange', component: ExchangeView },
 
   {
     path: '/area-cliente',
