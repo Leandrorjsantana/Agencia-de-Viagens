@@ -20,10 +20,11 @@ urlpatterns = [
     path('api/v1/contacts/', include('contacts.urls')),
     path('api/v1/pages/', include('pages.urls')),
     path('api/v1/company-info/', include('company_info.urls')),
+    path('api/v1/reviews/', include('reviews.urls')),
     path('api/v1/blog/', include('blog.urls')),
     
-    # A linha crucial que conecta o nosso app de avaliações
-    path('api/v1/reviews/', include('reviews.urls')),
+    # Conectando as rotas do nosso novo app 'help_center'
+    path('api/v1/help-center/', include('help_center.urls')),
 ]
 
 if settings.DEBUG:

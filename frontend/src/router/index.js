@@ -12,7 +12,9 @@ import PostDetailView from '../views/PostDetailView.vue'
 import AboutUsView from '../views/AboutUsView.vue'
 import CategoryBlogView from '../views/CategoryBlogView.vue'
 import ExperiencesView from '../views/ExperiencesView.vue'
-import SubmitReviewView from '../views/client_area/SubmitReviewView.vue'
+import HelpCenterView from '../views/HelpCenterView.vue'
+// Importando a nossa nova página
+import TelevendasView from '../views/TelevendasView.vue'
 
 const requireAuth = (to, from, next) => {
   if (!localStorage.getItem('accessToken')) {
@@ -23,7 +25,6 @@ const requireAuth = (to, from, next) => {
 };
 
 const routes = [
-  // Rotas Públicas Principais
   { path: '/', name: 'home', component: HomeView },
   { path: '/register', name: 'register', component: RegisterView },
   { path: '/login', name: 'login', component: LoginView },
@@ -38,7 +39,12 @@ const routes = [
   { path: '/blog/:slug', name: 'post-detail', component: PostDetailView },
   { path: '/blog/categoria/:slug', name: 'category-blog', component: CategoryBlogView },
 
-  // Rota da Área do Cliente (com todas as suas sub-páginas)
+  // --- ROTA DE AJUDA ADICIONADA AQUI ---
+  { path: '/ajuda', name: 'help-center', component: HelpCenterView },
+  
+  // --- ROTA DE TELEVENDAS ATUALIZADA AQUI ---
+  { path: '/televendas', name: 'televendas', component: TelevendasView },
+
   {
     path: '/area-cliente',
     component: ClientAreaLayout,
@@ -49,11 +55,12 @@ const routes = [
       { path: 'dashboard', name: 'dashboard', component: () => import('../views/client_area/DashboardView.vue') },
       { path: 'perfil', name: 'profile', component: () => import('../views/client_area/ProfileView.vue') },
       { path: 'reservas', name: 'reservations', component: () => import('../views/client_area/ReservationsView.vue') },
-      { path: 'avaliacoes/nova', name: 'submit-review', component: SubmitReviewView },
+      { path: 'avaliacoes', name: 'my-reviews', component: () => import('../views/client_area/MyReviewsView.vue') },
+      { path: 'avaliacoes/nova', name: 'submit-review', component: () => import('../views/client_area/SubmitReviewView.vue') },
     ]
   },
 
-  // Rota genérica para páginas de conteúdo (deve ser sempre a última)
+  // Rota genérica para páginas de conteúdo (fica no final)
   { path: '/:slug', name: 'page', component: PageView },
 ];
 

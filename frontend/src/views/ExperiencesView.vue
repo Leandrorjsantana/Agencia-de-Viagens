@@ -92,12 +92,11 @@ export default {
     }
   },
   watch: {
-    // Observa qualquer mudança nos filtros para refazer a busca
     filters: {
       handler() {
         this.fetchReviews();
       },
-      deep: true // Necessário para observar mudanças dentro do objeto
+      deep: true
     }
   },
   methods: {
@@ -107,10 +106,9 @@ export default {
     async fetchReviews() {
       this.loading = true;
       try {
-        // Constrói os parâmetros de busca a partir dos filtros
         const params = new URLSearchParams();
         if (this.filters.search) params.append('search', this.filters.search);
-        if (this.filters.rating) params.append('rating__gte', this.filters.rating); // __gte = maior ou igual a
+        if (this.filters.rating) params.append('rating__gte', this.filters.rating);
 
         const response = await axios.get(`${BACKEND_URL}/api/v1/reviews/list/`, { params });
         this.reviews = response.data;
@@ -142,17 +140,48 @@ export default {
 .page-header h1 { font-size: 2.8rem; }
 .page-header p { font-size: 1.2rem; margin-top: 10px; }
 .cta-button { display: inline-block; margin-top: 25px; padding: 12px 25px; background-color: #fff; color: var(--primary-color); border-radius: 50px; text-decoration: none; font-weight: bold; }
+
 .stats-section { background-color: #f8f9fa; padding: 30px 0; border-bottom: 1px solid #e9ecef; }
 .stats-section .container { display: flex; justify-content: space-around; text-align: center; }
 .stat-item strong { display: block; font-size: 2rem; font-weight: 700; }
-.filters-container { display: flex; gap: 20px; margin-bottom: 40px; }
-.filters-container input, .filters-container select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; }
-.search-filter { flex-grow: 1; }
-.rating-filter { min-width: 200px; }
+
+.filters-container { display: flex; gap: 15px; margin-bottom: 40px; justify-content: center; }
+.search-filter input { 
+  width: 250px; /* tamanho ajustável */
+  padding: 8px 12px; 
+  font-size: 0.85rem;
+  border-radius: 25px; /* bordas arredondadas */
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+  transition: all 0.2s ease;
+}
+.search-filter input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.rating-filter select { 
+  width: 150px; /* tamanho ajustável */
+  padding: 8px 12px; 
+  font-size: 0.85rem;
+  border-radius: 25px; 
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+.rating-filter select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
 .page-content { padding: 50px 20px; }
 .reviews-grid { display: grid; grid-template-columns: 1fr; gap: 30px; align-items: stretch; }
 @media (min-width: 768px) { .reviews-grid { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1200px) { .reviews-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
 .final-cta-section { background-color: #f8f9fa; padding: 60px 20px; text-align: center; }
 .final-cta-section h2 { font-size: 2rem; margin-bottom: 25px; }
 .final-cta-section .cta-button { background-color: var(--primary-color); color: #fff; }

@@ -2,7 +2,7 @@
   <div class="service-offers-page">
     <div class="page-header">
       <div class="container">
-        <h1>Ofertas de {{ serviceName }}</h1>
+        <h1> {{ serviceName }}</h1>
         <p>Explore todos os nossos pacotes, hotéis e experiências disponíveis.</p>
       </div>
     </div>

@@ -277,7 +277,7 @@ export default {
 .banner-carousel-section .carousel__item .banner-img {
   width: 100%;
   height: 350px;
-  object-fit: contain;
+  object-fit: contaim;
   display: block;
 }
 
@@ -346,4 +346,37 @@ export default {
 .newsletter-button:hover { opacity: 0.9; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+.services-bar button {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  color: #555;
+}
+
+.services-bar button i {
+  font-size: 1rem;
+  color: var(--primary-color);
+  transition: color 0.2s ease;
+}
+
+.services-bar button:hover,
+.services-bar button.active {
+  background-color: var(--primary-color);
+  color: #fff;          /* Texto branco */
+}
+
+.services-bar button:hover i,
+.services-bar button.active i {
+  color: #fff;           /* Ícone branco no hover/ativo */
+}
+
+
 </style>

@@ -4,10 +4,30 @@ from .models import Review
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'offer', 'rating', 'is_approved', 'is_featured', 'created_at')
-    list_filter = ('is_approved', 'is_featured', 'rating')
+    list_display = (
+        'title',
+        'offer',
+        'author',
+        'rating',
+        'is_approved',
+        'is_featured',
+        'created_at'
+    )
+    
+    list_filter = ('is_approved', 'is_featured', 'rating', 'created_at')
+    
     search_fields = ('title', 'content', 'author__username', 'offer__title')
-    autocomplete_fields = ['author', 'offer']
+    
+    readonly_fields = ('created_at',)
+    
+    # ORGANIZANDO OS CAMPOS E ADICIONANDO 'photo'
+    fieldsets = (
+        ('Controle da Avaliação', {
+            'fields': ('is_approved', 'is_featured')
+        }),
+        ('Detalhes da Avaliação', {
+            'fields': ('offer', 'author', 'title', 'content', 'rating', 'photo', 'created_at')
+        }),
+    )
 
-    # Adicionando o novo campo de foto ao formulário
-    fields = ('author', 'offer', 'title', 'content', 'rating', 'photo', 'is_approved', 'is_featured')
+    list_per_page = 25

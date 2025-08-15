@@ -137,21 +137,91 @@ export default {
 </script>
 
 <style scoped>
-.page-header { text-align: center; margin-bottom: 30px; }
-.page-header h1 { font-size: 1.8rem; }
-.review-form { background: #fff; padding: 30px; border-radius: 8px; max-width: 700px; margin: 0 auto; }
-.form-field { margin-bottom: 20px; }
-.form-field label { display: block; font-weight: 500; margin-bottom: 8px; }
-.form-field input, .form-field textarea, .form-field select {
+.page-header {
+  text-align: center;
+  margin-bottom: 20px; /* Menos espaço */
+}
+.page-header h1 {
+  font-size: 1.6rem; /* Um pouco menor */
+  margin-bottom: 5px;
+}
+.page-header p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.review-form {
+  background: #fff;
+  padding: 20px; /* Reduzi */
+  border-radius: 8px;
+  max-width: 600px; /* Mais estreito */
+  margin: 0 auto;
+}
+
+.form-field {
+  margin-bottom: 15px; /* Menos espaçamento */
+}
+.form-field label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+  font-size: 0.95rem;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
   width: 100%;
-  padding: 12px;
+  padding: 10px; /* Reduzi */
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  box-sizing: border-box;
 }
-.star-rating { font-size: 2rem; color: #ffc107; cursor: pointer; }
-.star-rating .star { margin-right: 5px; }
-.submit-button { width: 100%; padding: 15px; font-size: 1.1rem; font-weight: bold; color: #fff; background-color: var(--primary-color); border: none; border-radius: 8px; cursor: pointer; }
-.error-message { color: #721c24; background-color: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-.no-reservations-message { text-align: center; padding: 40px; background-color: #f8f9fa; border-radius: 8px; }
+
+.star-rating {
+  font-size: 1.6rem; /* Menor que antes */
+  color: #ffc107;
+  cursor: pointer;
+}
+.star-rating .star {
+  margin-right: 4px;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem; /* Menor */
+  font-weight: bold;
+  color: #fff;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.error-message {
+  color: #721c24;
+  background-color: #f8d7da;
+  padding: 8px; /* Menor */
+  border-radius: 5px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.no-reservations-message {
+  text-align: center;
+  padding: 25px; /* Menor */
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.95rem;
+  color: #555;
+}
 </style>
+

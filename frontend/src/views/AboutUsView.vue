@@ -38,6 +38,7 @@
       </div>
     </section>
 
+    <!-- SEÇÃO DA EQUIPE AJUSTADA -->
     <section class="team-section" v-if="teamMembers && teamMembers.length > 0">
       <div class="container">
         <h2 class="section-title">Conheça a equipe que transforma viagens em histórias.</h2>
@@ -92,25 +93,11 @@ export default {
     };
   },
   computed: {
-    // AJUSTE: Lógica do headerStyle atualizada para seguir o padrão
     headerStyle() {
       const config = this.pageData?.site_configuration;
-      // Se não houver configuração, usa o fallback final
-      if (!config) {
-        return { backgroundColor: '#003366' };
-      }
-
-      // Prioridade 1: Imagem de fundo específica desta página
-      if (config.about_us_header_image) {
-        return { backgroundImage: `url(${this.getMediaUrl(config.about_us_header_image)})` };
-      }
-
-      // Prioridade 2: Cor de fundo global para cabeçalhos de página
-      if (config.page_header_bg_color) {
-        return { backgroundColor: config.page_header_bg_color };
-      }
-      
-      // Fallback final, caso nenhuma das opções acima esteja definida
+      if (!config) return { backgroundColor: '#003366' };
+      if (config.about_us_header_image) return { backgroundImage: `url(${this.getMediaUrl(config.about_us_header_image)})` };
+      if (config.page_header_bg_color) return { backgroundColor: config.page_header_bg_color };
       return { backgroundColor: '#003366' };
     }
   },
@@ -132,7 +119,7 @@ export default {
 </script>
 
 <style scoped>
-/* Nenhum ajuste necessário aqui, os estilos já são compatíveis */
+/* CABEÇALHO */
 .page-header {
   position: relative;
   height: 40vh;
@@ -141,7 +128,6 @@ export default {
   background-position: center;
   color: #fff;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -151,131 +137,51 @@ export default {
   top: 0; left: 0; width: 100%; height: 100%;
   background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.3));
 }
-.header-content {
-  position: relative;
-  z-index: 2;
-}
-.header-content h1 {
-  font-size: 2.4rem;
-  font-weight: 700;
-  margin-bottom: 0.3rem;
-}
-.header-content p {
-  font-size: 1.1rem;
-  margin: 0;
-}
+.header-content { position: relative; z-index: 2; }
+.header-content h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 0.3rem; }
+.header-content p { font-size: 1.1rem; margin: 0; }
 
-.content-section {
-  padding: 40px 0;
-}
-.history-content {
-  max-width: 720px;
-  margin: 0 auto;
-  line-height: 1.6;
-  font-size: 1rem;
-}
-.history-content ::v-deep(h2) {
-  text-align: center;
-  margin-bottom: 25px;
-}
+/* HISTÓRIA */
+.content-section { padding: 40px 0; }
+.history-content { max-width: 720px; margin: 0 auto; line-height: 1.6; font-size: 1rem; }
 
-.values-section {
-  background-color: #f8f9fa;
-  padding: 40px 0;
-}
-.values-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-}
-.value-card {
-  background: #fff;
-  padding: 25px;
-  border-radius: 8px;
-  text-align: center;
-}
-.value-card i {
-  font-size: 2.2rem;
-  color: var(--primary-color);
-  margin-bottom: 12px;
-}
-.value-card h3 {
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-.value-card ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
+/* VALORES */
+.values-section { background-color: #f8f9fa; padding: 40px 0; }
+.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+.value-card { background: #fff; padding: 25px; border-radius: 8px; text-align: center; }
+.value-card i { font-size: 2.2rem; color: var(--primary-color); margin-bottom: 12px; }
+.value-card h3 { margin-bottom: 8px; font-weight: 600; }
+.value-card ul { list-style: none; padding: 0; margin: 0; font-size: 0.95rem; line-height: 1.4; }
 
-.team-section {
-  padding: 40px 0;
-}
-.section-title {
-  text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 30px;
-}
+/* EQUIPE AJUSTADA */
+.team-section { padding: 40px 0; }
+.section-title { text-align: center; font-size: 1.8rem; margin-bottom: 30px; }
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* largura mínima e máxima do card */
+  gap: 5px; /* espaçamento entre cards */
+  justify-items: center; /* centraliza horizontalmente */
 }
-.team-card {
-  text-align: center;
-}
+.team-card { text-align: center; max-width: 200px; }
 .team-card img {
-  width: 130px;
-  height: 130px;
+  width: 110px; /* tamanho da foto */
+  height: 110px; /* mantém proporção */
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 12px;
 }
-.team-card h4 {
-  margin-bottom: 4px;
-  font-size: 1.1rem;
-}
-.team-card .role {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 8px;
-}
-.team-card .bio {
-  font-style: italic;
-  font-size: 0.9rem;
-  margin: 0;
-}
+.team-card h4 { margin-bottom: 4px; font-size: 1rem; }
+.team-card .role { color: #666; font-size: 0.85rem; margin-bottom: 8px; }
+.team-card .bio { font-style: italic; font-size: 0.85rem; margin: 0; }
 
-.stats-section {
-  background-color: var(--primary-color);
-  color: #fff;
-  padding: 40px 0;
-}
-.stats-section .container {
-  display: flex;
-  justify-content: space-around;
-  text-align: center;
-  flex-wrap: wrap;
-  gap: 25px;
-}
-.stat-item strong {
-  display: block;
-  font-size: 2rem;
-  font-weight: 700;
-}
-.stat-item span {
-  display: block;
-  font-size: 1rem;
-  margin-top: 5px;
-}
+/* ESTATÍSTICAS */
+.stats-section { background-color: var(--primary-color); color: #fff; padding: 40px 0; }
+.stats-section .container { display: flex; justify-content: space-around; text-align: center; flex-wrap: wrap; gap: 25px; }
+.stat-item strong { display: block; font-size: 2rem; font-weight: 700; }
+.stat-item span { display: block; font-size: 1rem; margin-top: 5px; }
 
-.cta-section {
-  padding: 40px 0;
-  text-align: center;
-}
+/* CTA FINAL */
+.cta-section { padding: 40px 0; text-align: center; }
 .cta-button {
   display: inline-block;
   padding: 14px 28px;
@@ -287,7 +193,5 @@ export default {
   font-size: 1rem;
   transition: background-color 0.3s ease;
 }
-.cta-button:hover {
-  background-color: #004a99;
-}
+.cta-button:hover { background-color: #004a99; }
 </style>

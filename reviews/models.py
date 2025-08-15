@@ -4,36 +4,47 @@ from django.contrib.auth.models import User
 from offers.models import Offer
 
 class Review(models.Model):
-    RATING_CHOICES = [
-        (1, '1 Estrela'), (2, '2 Estrelas'), (3, '3 Estrelas'),
-        (4, '4 Estrelas'), (5, '5 Estrelas'),
-    ]
+    RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
 
-    # CORREÇÃO: A oferta agora é opcional
     offer = models.ForeignKey(
-        Offer, on_delete=models.SET_NULL, null=True, blank=True, 
+        Offer,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='reviews',
         verbose_name="Oferta Avaliada (Opcional)"
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Autor (Cliente)")
-    
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Autor da Avaliação"
+    )
+
     title = models.CharField(max_length=200, verbose_name="Título da Avaliação")
     content = models.TextField(verbose_name="Conteúdo da Avaliação")
-    rating = models.IntegerField(choices=RATING_CHOICES, verbose_name="Nota (Estrelas)")
-    
-    # NOVO CAMPO: Foto enviada pelo cliente
-    photo = models.ImageField(
-        upload_to='review_photos/', blank=True, null=True,
-        verbose_name="Foto da Viagem (Opcional)",
-        help_text="Uma foto enviada pelo cliente para ilustrar a experiência."
+    rating = models.IntegerField(
+        choices=RATING_CHOICES,
+        default=5,
+        verbose_name="Nota (de 1 a 5)"
     )
     
-    is_approved = models.BooleanField(default=True, verbose_name="Aprovada?")
-    is_featured = models.BooleanField(default=False, verbose_name="Destacar na Página Inicial?")
-    
-    created_at = models.DateTimeField(auto_now_add=True)
+    # ADICIONANDO O CAMPO DE FOTO DE VOLTA
+    photo = models.ImageField(
+        upload_to='review_photos/',
+        blank=True,
+        null=True,
+        verbose_name="Foto da Viagem"
+    )
+
+    is_approved = models.BooleanField(default=False, verbose_name="Aprovada?")
+    is_featured = models.BooleanField(default=False, verbose_name="Destaque?")
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
 
     def __str__(self):
-        return f"Avaliação de {self.author.username} para {self.offer.title if self.offer else 'avaliação geral'}"
+        if self.offer:
+            return f"Avaliação de {self.author.username} para '{self.offer.title}'"
+        return f"Avaliação geral de {self.author.username}"
 
     class Meta:
         ordering = ['-created_at']

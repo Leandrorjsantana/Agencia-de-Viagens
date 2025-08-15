@@ -256,14 +256,21 @@ export default {
 .post-meta-bottom span:not(:last-child)::after { content: '•'; margin: 0 10px; }
 .featured-image-container { margin-bottom: 30px; }
 .featured-image-container img { width: 100%; border-radius: 12px; }
-.post-body { line-height: 1.8; font-size: 1.1rem; }
+.post-body { line-height: 1.8; font-size: 0.9rem; }
 .post-body ::v-deep(p) { margin-bottom: 1.5em; }
 .post-body ::v-deep(h2) { font-size: 1.8rem; margin-top: 1.5em; margin-bottom: 0.8em; }
 .post-body ::v-deep(ul) { padding-left: 25px; margin-bottom: 1.5em; }
 .post-body ::v-deep(blockquote) { border-left: 4px solid var(--primary-color); padding-left: 20px; margin: 2em 0; font-style: italic; color: #666; }
-.post-footer { margin-top: 40px; padding-top: 30px; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; gap: 30px; }
-.share-section { text-align: center; }
-.share-section strong { display: block; margin-bottom: 15px; font-size: 1.1rem; }
+
+/* Ajuste principal: centralizar texto e botões */
+.post-footer .share-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
 .share-buttons { display: flex; gap: 15px; }
 .share-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; text-decoration: none; font-size: 1.1rem; transition: transform 0.2s; }
 .share-btn:hover { transform: scale(1.1); }

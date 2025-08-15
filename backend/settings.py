@@ -17,10 +17,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'help_center.apps.HelpCenterConfig',
+
     # Apps de Terceiros
     'rest_framework',
-    'django_filters', # <-- Ferramenta de filtros adicionada aqui
+    'django_filters',  # <-- Ferramenta de filtros
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'dj_rest_auth',
@@ -92,10 +93,10 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 LANGUAGE_CODE = 'pt-br'
@@ -114,7 +115,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    # Adicionando o backend de filtros como padrão
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
@@ -172,6 +172,7 @@ JAZZMIN_SETTINGS = {
         "subscribers": {"name": "Marketing", "icon": "fa fa-envelope"},
         "accounts": {"name": "Administração", "icon": "fa fa-users-cog"},
         "auth": {"name": "Administração", "icon": "fa fa-users"},
+        "help_center": {"name": "Ajuda", "icon": "fa fa-question-circle"},  # Adicionado ícone
     },
     "icons": {
         "auth.User": "fa fa-user",
@@ -195,11 +196,44 @@ JAZZMIN_SETTINGS = {
         "services.service": "fa fa-concierge-bell",
         "site_settings.siteconfiguration": "fa fa-cogs",
         "subscribers.subscriber": "fa fa-at",
+        "help_center.category": "fa fa-question-circle",  # Ícone da categoria de ajuda
     },
     "hide_apps": ["authtoken", "account", "socialaccount"],
 }
 
 JAZZMIN_UI_TWEAKS = {
-    "theme": "flatly",
-    "related_modal_active": True,
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",
+    "navbar": "navbar-white navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": True,
+    "sidebar_nav_flat_style": False,
+    "theme": "lumen",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    },
+    "related_modal_active": True
 }
+
+# Configuração de arquivos de mídia (uploads de usuários)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

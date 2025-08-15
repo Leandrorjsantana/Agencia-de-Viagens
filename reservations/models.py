@@ -1,11 +1,9 @@
 # reservations/models.py
-
 from django.db import models
 from django.contrib.auth.models import User
 from offers.models import Offer
 
 class Reservation(models.Model):
-    # --- STATUS ATUALIZADOS CONFORME O SEU PEDIDO ---
     STATUS_CHOICES = [
         ('AWAITING_CONTACT', 'Aguardando Contato'),
         ('CONTACTED', 'Contactado'),
@@ -14,7 +12,6 @@ class Reservation(models.Model):
         ('CANCELED', 'Cancelada'),
         ('COMPLETED', 'Concluída'),
     ]
-
     client = models.ForeignKey(User, on_delete=models.PROTECT, related_name='reservations', verbose_name="Cliente")
     offer = models.ForeignKey(Offer, on_delete=models.SET_NULL, null=True, blank=True, related_name='reservations', verbose_name="Oferta Associada (Opcional)")
     reservation_code = models.CharField(max_length=20, unique=True, verbose_name="Código da Reserva")
@@ -23,6 +20,10 @@ class Reservation(models.Model):
     end_date = models.DateField(verbose_name="Data de Fim da Viagem")
     total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Preço Total (R$)")
     notes = models.TextField(blank=True, verbose_name="Observações Internas (só para o admin)")
+    
+    # --- CORREÇÃO: Garantindo que o campo tem um valor padrão ---
+    has_been_reviewed = models.BooleanField(default=False, verbose_name="Já foi avaliada?")
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

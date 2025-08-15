@@ -12,6 +12,11 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
         ('Informações de Contato Públicas', {
             'fields': ('public_email', 'public_whatsapp', 'address_street', 'address_neighborhood', ('address_city', 'address_state'), 'address_cep', 'opening_hours')
         }),
+        # --- NOVA SECÇÃO PARA A PÁGINA DE TELEVENDAS ---
+        ('Página de Televendas', {
+            'classes': ('collapse',),
+            'fields': ('televendas_phone', 'televendas_page_title', 'televendas_page_subtitle', 'televendas_benefits')
+        }),
         ('Página de Contato', {
             'fields': ('contact_page_title', 'contact_page_subtitle', 'google_maps_embed_url', 'contact_form_subjects')
         }),
@@ -23,11 +28,15 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
                 ('stat_years', 'stat_destinations', 'stat_clients')
             )
         }),
+        ('Página de Experiências', {
+            'classes': ('collapse',),
+            'fields': ('experiences_page_title', 'experiences_page_subtitle')
+        }),
         ('Configurações de Códigos', {
             'fields': ('offer_code_prefix',)
         }),
         ('Estilo Global', {
-            'fields': ('main_font', 'primary_color', 'page_header_bg_color') # <-- Adicionado aqui
+            'fields': ('main_font', 'primary_color', 'page_header_bg_color')
         }),
         ('Seção de Busca (Hero)', {
             'fields': ('hero_background_color', 'hero_background_image', 'booking_form_bg_color')
