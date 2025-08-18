@@ -4,7 +4,15 @@
       <div class="header-top">
         <div class="container">
           <div class="top-info">
-            <component v-for="link in pageData.top_bar_links" :key="link.id" :is="link.url ? 'a' : 'div'" :href="link.url || null" target="_blank" rel="noopener noreferrer" class="info-item">
+            <component 
+              v-for="link in pageData.top_bar_links" 
+              :key="link.id" 
+              :is="link.url ? 'a' : 'div'" 
+              :href="link.url || null" 
+              :target="getTarget(link)" 
+              :rel="getRel(link)"
+              class="info-item"
+            >
               <i :class="link.icon_class"></i>
               <span>{{ link.title }}</span>
             </component>
@@ -62,6 +70,17 @@ export default {
         return `${this.backendUrl}${this.pageData.site_configuration.logo}`;
       }
       return '';
+    }
+  },
+  // --- MÉTODOS ADICIONADOS PARA A LÓGICA DOS LINKS ---
+  methods: {
+    getTarget(link) {
+      // Retorna '_blank' apenas se a propriedade for explicitamente true
+      return link.open_in_new_tab === true ? '_blank' : '_self';
+    },
+    getRel(link) {
+      // Retorna o atributo 'rel' apenas se for abrir em nova aba
+      return link.open_in_new_tab === true ? 'noopener noreferrer' : null;
     }
   }
 }

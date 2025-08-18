@@ -17,8 +17,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    # Apps de Terceiros
     'rest_framework',
     'django_filters',
     'rest_framework.authtoken',
@@ -33,8 +31,6 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'ckeditor',
     'ckeditor_uploader',
-
-    # Nossos Apps
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
     'site_settings.apps.SiteSettingsConfig',
@@ -112,18 +108,16 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# --- AJUSTE 1: GARANTE QUE O DJANGO ENCONTRE SEUS ARQUIVOS JS/CSS DO ADMIN ---
 STATICFILES_DIRS = [
     BASE_DIR / 'core/static',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- AJUSTE 2: CORREÇÃO DO ERRO 401 UNAUTHORIZED NO ADMIN ---
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication', # <-- LINHA ADICIONADA
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
@@ -147,6 +141,7 @@ REST_AUTH = {
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
+# --- AJUSTES DE TRADUÇÃO APLICADOS AQUI ---
 JAZZMIN_SETTINGS = {
     "site_title": "Painel da Agência",
     "site_header": "Agência de Viagens",
@@ -168,23 +163,23 @@ JAZZMIN_SETTINGS = {
         "auth", "accounts",
     ],
     "apps": {
-        "site_settings": {"name": "Configurações do Site", "icon": "fa fa-cog"},
-        "banners": {"name": "Gestão da Página Inicial", "icon": "fa fa-images"},
-        "promotions": {"name": "Gestão da Página Inicial", "icon": "fa fa-star"},
-        "menus": {"name": "Gestão de Menus", "icon": "fa fa-bars"},
-        "company_info": {"name": "Gestão de Conteúdo", "icon": "fa fa-users"},
-        "pages": {"name": "Gestão de Conteúdo", "icon": "fa fa-file-alt"},
-        "blog": {"name": "Gestão de Conteúdo", "icon": "fa fa-rss"},
-        "reviews": {"name": "Gestão de Conteúdo", "icon": "fa fa-star"},
-        "help_center": {"name": "Gestão de Conteúdo", "icon": "fa fa-question-circle"},
-        "services": {"name": "Catálogo", "icon": "fa fa-concierge-bell"},
-        "offers": {"name": "Catálogo", "icon": "fa fa-tag"},
-        "insurance": {"name": "Catálogo", "icon": "fa fa-shield-alt"},
-        "reservations": {"name": "Vendas", "icon": "fa fa-file-invoice-dollar"},
-        "contacts": {"name": "Vendas", "icon": "fa fa-headset"},
-        "subscribers": {"name": "Marketing", "icon": "fa fa-envelope"},
-        "accounts": {"name": "Administração", "icon": "fa fa-users-cog"},
-        "auth": {"name": "Administração", "icon": "fa fa-users"},
+        "site_settings": {"name": "Configurações Gerais", "icon": "fa fa-cog"},
+        "banners":       {"name": "Página Inicial", "icon": "fa fa-images"},
+        "promotions":    {"name": "Página Inicial", "icon": "fa fa-star"},
+        "menus":         {"name": "Menus e Links", "icon": "fa fa-bars"},
+        "company_info":  {"name": "Conteúdo do Site", "icon": "fa fa-building"},
+        "pages":         {"name": "Conteúdo do Site", "icon": "fa fa-file-alt"},
+        "blog":          {"name": "Conteúdo do Site", "icon": "fa fa-rss"},
+        "reviews":       {"name": "Conteúdo do Site", "icon": "fa fa-star"},
+        "help_center":   {"name": "Conteúdo do Site", "icon": "fa fa-question-circle"},
+        "services":      {"name": "Catálogo de Produtos", "icon": "fa fa-concierge-bell"},
+        "offers":        {"name": "Catálogo de Produtos", "icon": "fa fa-tag"},
+        "insurance":     {"name": "Catálogo de Produtos", "icon": "fa fa-shield-alt"},
+        "reservations":  {"name": "Vendas", "icon": "fa fa-file-invoice-dollar"},
+        "contacts":      {"name": "Vendas", "icon": "fa fa-headset"},
+        "subscribers":   {"name": "Marketing", "icon": "fa fa-envelope"},
+        "accounts":      {"name": "Administração", "icon": "fa fa-users-cog"},
+        "auth":          {"name": "Administração", "icon": "fa fa-users"},
     },
     "icons": {
         "auth.User": "fa fa-user",
@@ -220,6 +215,35 @@ JAZZMIN_SETTINGS = {
 }
 
 JAZZMIN_UI_TWEAKS = {
-    "theme": "flatly",
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",
+    "navbar": "navbar-white navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "lumen",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    },
     "related_modal_active": True,
+    "actions_sticky_top": True
 }

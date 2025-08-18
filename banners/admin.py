@@ -1,4 +1,5 @@
 # banners/admin.py
+
 from django.contrib import admin
 from .models import Banner
 from adminsortable2.admin import SortableAdminMixin

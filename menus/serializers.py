@@ -6,14 +6,14 @@ from .models import TopBarLink, MenuItem, SocialMediaLink
 class TopBarLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = TopBarLink
-        fields = ('id', 'title', 'url', 'icon_class')
+        # --- CORREÇÃO APLICADA AQUI ---
+        fields = ('id', 'title', 'url', 'icon_class', 'open_in_new_tab')
 
 class MenuItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = MenuItem
         fields = ('id', 'title', 'url', 'is_external')
 
-# --- CORREÇÃO AQUI: Usando o campo 'name' que está no seu models.py ---
 class SocialMediaLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialMediaLink

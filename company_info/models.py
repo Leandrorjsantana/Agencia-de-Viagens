@@ -14,4 +14,4 @@ class TeamMember(models.Model):
     class Meta:
         ordering = ['order']
         verbose_name = "Membro da Equipa"
-        verbose_name_plural = "Equipa"
+        verbose_name_plural = "Equipe"

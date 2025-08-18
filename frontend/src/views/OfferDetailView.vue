@@ -181,7 +181,16 @@ export default {
             headers: this.getAuthHeaders(),
           });
           this.userProfile = response.data;
+
+          // --- CORREÇÃO ADICIONADA AQUI ---
+          // Antes de abrir o modal, copiamos os dados da oferta para o formulário.
+          if (this.offer) {
+            this.reservationForm.start_date = this.offer.start_date;
+            this.reservationForm.end_date = this.offer.end_date;
+          }
+          
           this.isReservationModalOpen = true;
+
         } catch (error) {
           alert('Não foi possível carregar os seus dados. Por favor, tente novamente.');
           console.error('Erro ao buscar perfil para reserva:', error);
@@ -236,15 +245,13 @@ export default {
   grid-template-columns: 2fr 1fr;
   gap: 40px;
 }
-
-/* Ajuste no contêiner da imagem para diminuir borda preta */
 .offer-gallery {
-  max-height: 320px; /* limita altura máxima do container */
+  max-height: 320px;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5; /* fundo cinza claro para o espaço */
+  background-color: #f5f5f5;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
@@ -254,7 +261,6 @@ export default {
   object-fit: contain;
   display: block;
 }
-
 .offer-description {
   margin-top: 30px;
 }
@@ -285,7 +291,6 @@ export default {
 .offer-includes .fa-check {
   color: #198754;
 }
-
 .price-card {
   background: #fff;
   padding: 25px;
@@ -378,8 +383,6 @@ export default {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(13, 110, 253, 0.4);
 }
-
-/* Estilos do Modal */
 .modal-overlay {
   position: fixed;
   top: 0;

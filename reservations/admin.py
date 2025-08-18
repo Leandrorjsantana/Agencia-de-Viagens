@@ -1,29 +1,27 @@
 # reservations/admin.py
+
 from django.contrib import admin
 from django import forms
-from django.contrib.auth.models import User
 from .models import Reservation, ReservationDocument
 
 class ReservationAdminForm(forms.ModelForm):
-    # This form is now primarily for the ADD view, but will be used by the change view
-    # where the fields are handled by readonly_fields.
+    # Campo para confirmação do nome do cliente
+    client_name_confirmation = forms.CharField(
+        label="Nome do Cliente (Confirmação)", 
+        required=False, 
+        widget=forms.TextInput(attrs={'readonly': 'readonly', 'style': 'background: #f0f0f0; border: none;'})
+    )
     
+    # Novo campo para exibir o Código da Oferta
+    offer_code_placeholder = forms.CharField(
+        label="Código da Oferta",
+        required=False,
+        widget=forms.TextInput(attrs={'readonly': 'readonly', 'style': 'background: #f0f0f0; border: none;'})
+    )
+
     class Meta:
         model = Reservation
         fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # --- CORREÇÃO AQUI ---
-        # Só tentamos customizar o campo 'client' se ele estiver no formulário.
-        # (Ele não estará no formulário na tela de edição, pois é readonly).
-        if 'client' in self.fields:
-            self.fields['client'].label_from_instance = self.label_for_client
-
-    def label_for_client(self, obj):
-        if obj.get_full_name():
-            return f"{obj.get_full_name()} ({obj.username})"
-        return obj.username
 
 class ReservationDocumentInline(admin.TabularInline):
     model = ReservationDocument
@@ -35,31 +33,29 @@ class ReservationDocumentInline(admin.TabularInline):
 class ReservationAdmin(admin.ModelAdmin):
     form = ReservationAdminForm
     inlines = [ReservationDocumentInline]
-    list_display = ('reservation_code', 'client', 'offer', 'start_date', 'status', 'total_price')
+    list_display = ('reservation_code', 'client_full_name_display', 'offer', 'start_date', 'status', 'total_price')
     list_filter = ('status', 'start_date')
-    search_fields = ('reservation_code', 'client__username', 'client__first_name', 'offer__title', 'offer__offer_code')
+    search_fields = ('reservation_code', 'client__username', 'client__first_name', 'client__last_name', 'offer__title', 'offer__offer_code')
     autocomplete_fields = ['client', 'offer']
     
-    def offer_code_display(self, obj):
-        if obj and obj.offer:
-            return obj.offer.offer_code
+    def client_full_name_display(self, obj):
+        if obj.client:
+            return obj.client.get_full_name() or obj.client.username
         return "N/A"
-    offer_code_display.short_description = "Código da Oferta"
+    client_full_name_display.short_description = 'Cliente'
+    client_full_name_display.admin_order_field = 'client__first_name'
 
     def get_readonly_fields(self, request, obj=None):
-        # When obj is None, we are on the ADD page
-        # When obj is not None, we are on the CHANGE page
-        base_readonly = ('created_at', 'updated_at', 'offer_code_display')
-        if obj: # On the CHANGE page, make these fields readonly
-            return base_readonly + ('client', 'offer', 'reservation_code', 'start_date', 'end_date', 'total_price')
-        return base_readonly # On the ADD page, these are editable (by our JS)
+        if obj: # Editando
+            return ('created_at', 'updated_at', 'client', 'offer', 'reservation_code', 'start_date', 'end_date', 'total_price')
+        return ('created_at', 'updated_at') # Criando
 
     fieldsets = (
         ("Dados Principais", {
-            'fields': ('client', 'offer', 'status')
+            'fields': ('client', 'client_name_confirmation', 'offer', 'status')
         }),
         ("Dados da Reserva (Gerado Automaticamente)", {
-            'fields': ('offer_code_display', 'reservation_code', 'start_date', 'end_date', 'total_price')
+            'fields': ('offer_code_placeholder', 'reservation_code', 'start_date', 'end_date', 'total_price')
         }),
         ("Outras Informações", {
             'fields': ('notes', 'has_been_reviewed', 'created_at', 'updated_at')
@@ -67,9 +63,8 @@ class ReservationAdmin(admin.ModelAdmin):
     )
     
     def save_model(self, request, obj, form, change):
-        if not change and obj.offer: # Only on creation
+        if not change and obj.offer:
             obj.total_price = obj.offer.price
-            # The JS handles the other fields, but this is a server-side backup for price
         super().save_model(request, obj, form, change)
 
     class Media:
