@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'help_center.apps.HelpCenterConfig',
     'insurance.apps.InsuranceConfig',
     'exchange.apps.ExchangeConfig',
-    'promotions.apps.PromotionsConfig', # App de Promoções adicionado
+    'promotions.apps.PromotionsConfig',
 ]
 
 MIDDLEWARE = [
@@ -112,11 +112,18 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# --- AJUSTE 1: GARANTE QUE O DJANGO ENCONTRE SEUS ARQUIVOS JS/CSS DO ADMIN ---
+STATICFILES_DIRS = [
+    BASE_DIR / 'core/static',
+]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# --- AJUSTE 2: CORREÇÃO DO ERRO 401 UNAUTHORIZED NO ADMIN ---
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication', # <-- LINHA ADICIONADA
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }

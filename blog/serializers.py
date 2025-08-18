@@ -4,8 +4,6 @@ from rest_framework import serializers
 from .models import Post, Category, Tag, BlogAdBanner, Comment
 from django.contrib.auth.models import User
 
-# Este é o nosso "molde" de autor definitivo.
-# Ele serve tanto para o Blog quanto para as Avaliações.
 class AuthorSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
     profile_picture = serializers.SerializerMethodField()
@@ -25,6 +23,7 @@ class AuthorSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.profile.profile_picture.url)
         return None
 
+# ... (O resto dos seus serializers continua igual)
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category

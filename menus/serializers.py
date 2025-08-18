@@ -13,8 +13,9 @@ class MenuItemSerializer(serializers.ModelSerializer):
         model = MenuItem
         fields = ('id', 'title', 'url')
 
+# --- CORREÇÃO AQUI: Usando os campos corretos do modelo ---
 class SocialMediaLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialMediaLink
-        # CORRIGIDO: O campo 'platform' foi trocado por 'name', que é o campo correto no seu models.py
-        fields = ('id', 'name', 'url', 'icon_class')
+        # O campo 'platform' foi trocado de volta para 'title', que é o campo correto.
+        fields = ('id', 'title', 'url', 'icon_class')
